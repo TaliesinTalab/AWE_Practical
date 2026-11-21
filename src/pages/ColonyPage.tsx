@@ -10,16 +10,16 @@ export function ColonyPage() {
     colony,
     activities,
     expeditionPending,
-    assignDwarf,
+    assignPerson,
     sendExpedition,
   } = useColony();
   const [destination, setDestination] = useState("crystal-cave");
-  const [expeditionDwarf, setExpeditionDwarf] = useState("dwarf-3");
+  const [expeditionPerson, setExpeditionPerson] = useState("dwarf-3");
 
-  const dailyOutput = colony.dwarves.reduce<Record<ResourceKey, number>>(
-    (total, dwarf) => {
-      if (dwarf.assignment) {
-        const output = production[dwarf.assignment];
+  const dailyOutput = colony.people.reduce<Record<ResourceKey, number>>(
+    (total, person) => {
+      if (person.assignment) {
+        const output = production[person.assignment];
         Object.entries(output).forEach(([resource, amount]) => {
           total[resource as ResourceKey] += amount ?? 0;
         });
@@ -29,14 +29,16 @@ export function ColonyPage() {
     {
       wood: 0,
       stone: 0,
-      food: -colony.dwarves.length,
+      food: -colony.people.length,
       tools: 0,
+      weapons: 0,
+      panFlutes: 0,
     },
   );
 
   return (
     <div className="dashboard">
-      <DwarfRoster dwarves={colony.dwarves} onAssign={assignDwarf} />
+      <DwarfRoster people={colony.people} onAssign={assignPerson} />
 
       <section className="center-stack">
         <section className="panel production">
@@ -61,8 +63,8 @@ export function ColonyPage() {
                 <h3>{jobLabel(job)}</h3>
                 <p>
                   {
-                    colony.dwarves.filter(
-                      (dwarf) => dwarf.assignment === job,
+                    colony.people.filter(
+                      (person) => person.assignment === job,
                     ).length
                   }{" "}
                   assigned
@@ -95,12 +97,12 @@ export function ColonyPage() {
           <label>
             Scout
             <select
-              value={expeditionDwarf}
-              onChange={(event) => setExpeditionDwarf(event.target.value)}
+              value={expeditionPerson}
+              onChange={(event) => setExpeditionPerson(event.target.value)}
             >
-              {colony.dwarves.map((dwarf) => (
-                <option key={dwarf.id} value={dwarf.id}>
-                  {dwarf.name}
+              {colony.people.map((person) => (
+                <option key={person.id} value={person.id}>
+                  {person.name}
                 </option>
               ))}
             </select>
@@ -120,7 +122,7 @@ export function ColonyPage() {
 
           <button
             disabled={expeditionPending}
-            onClick={() => sendExpedition(expeditionDwarf, destination)}
+            onClick={() => sendExpedition(expeditionPerson, destination)}
           >
             {expeditionPending ? "Beyond the gate…" : "Send expedition"}
           </button>
