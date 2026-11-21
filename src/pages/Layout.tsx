@@ -13,7 +13,7 @@ export function Layout() {
           <div>
             <small>THE DEEP REALMS OF</small>
             <h1>
-              Dwarf<span>hold</span>
+              Person<span>hold</span>
             </h1>
           </div>
         </div>
