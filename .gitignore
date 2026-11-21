@@ -7,5 +7,5 @@ vite.config.d.ts
 *.log
 .DS_Store
 
-# Local files and notes
-_local/
+# Local files
+_local
