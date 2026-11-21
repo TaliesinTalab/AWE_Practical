@@ -3,6 +3,7 @@ import { Chronicle } from "../components/Chronicle";
 import { DwarfRoster } from "../components/DwarfRoster";
 import { jobLabel, production } from "../simulation";
 import { useColony } from "../state/ColonyContext";
+import { availablePerson } from "../state/colonyReducer";
 import type { ResourceKey } from "../types";
 
 export function ColonyPage() {
@@ -14,7 +15,8 @@ export function ColonyPage() {
     sendExpedition,
   } = useColony();
   const [destination, setDestination] = useState("crystal-cave");
-  const [expeditionPerson, setExpeditionPerson] = useState("dwarf-3");
+  const [expeditionPerson, setExpeditionPerson] = useState(colony.people[0]?.id ?? "");
+  const canSend = !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
 
   const dailyOutput = colony.people.reduce<Record<ResourceKey, number>>(
     (total, person) => {
@@ -101,7 +103,7 @@ export function ColonyPage() {
               onChange={(event) => setExpeditionPerson(event.target.value)}
             >
               {colony.people.map((person) => (
-                <option key={person.id} value={person.id}>
+                <option key={person.id} value={person.id} disabled={person.task !== null}>
                   {person.name}
                 </option>
               ))}
@@ -121,7 +123,7 @@ export function ColonyPage() {
           </label>
 
           <button
-            disabled={expeditionPending}
+            disabled={!canSend}
             onClick={() => sendExpedition(expeditionPerson, destination)}
           >
             {expeditionPending ? "Beyond the gate…" : "Send expedition"}
