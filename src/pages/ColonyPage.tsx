@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Chronicle } from "../components/Chronicle";
 import { DwarfRoster } from "../components/DwarfRoster";
-import { jobLabel, production } from "../simulation";
+import { dailyProduction, jobLabel } from "../simulation";
 import { useColony } from "../state/ColonyContext";
 import { availablePerson } from "../state/colonyReducer";
 import type { ResourceKey } from "../types";
@@ -18,25 +18,14 @@ export function ColonyPage() {
   const [expeditionPerson, setExpeditionPerson] = useState(colony.people[0]?.id ?? "");
   const canSend = !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
 
-  const dailyOutput = colony.people.reduce<Record<ResourceKey, number>>(
-    (total, person) => {
-      if (person.assignment) {
-        const output = production[person.assignment];
-        Object.entries(output).forEach(([resource, amount]) => {
-          total[resource as ResourceKey] += amount ?? 0;
-        });
-      }
-      return total;
-    },
-    {
-      wood: 0,
-      stone: 0,
-      food: -colony.people.length,
-      tools: 0,
-      weapons: 0,
-      panFlutes: 0,
-    },
-  );
+  const gained = dailyProduction(colony);
+  const netFood = gained.food - colony.people.length;
+
+  const jobGainKey: Record<"woodcutting" | "mining" | "farming", ResourceKey> = {
+    woodcutting: "wood",
+    mining: "stone",
+    farming: "food",
+  };
 
   return (
     <div className="dashboard">
@@ -66,21 +55,21 @@ export function ColonyPage() {
                 <p>
                   {
                     colony.people.filter(
-                      (person) => person.assignment === job,
+                      (person) => person.assignment === job && person.task === null,
                     ).length
                   }{" "}
-                  assigned
+                  working
                 </p>
-                <strong>+{Object.values(production[job])[0]} / day</strong>
+                <strong>+{gained[jobGainKey[job]]} / day</strong>
               </article>
             ))}
           </div>
 
           <div className="net-line">
             <span>NET FOOD AFTER MEALS</span>
-            <strong className={dailyOutput.food >= 0 ? "gain" : "loss"}>
-              {dailyOutput.food >= 0 ? "+" : ""}
-              {dailyOutput.food}
+            <strong className={netFood >= 0 ? "gain" : "loss"}>
+              {netFood >= 0 ? "+" : ""}
+              {netFood}
             </strong>
           </div>
         </section>
