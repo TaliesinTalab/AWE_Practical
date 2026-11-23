@@ -32,14 +32,14 @@ export function DwarfRoster({ people, onAssign }: Props) {
       <div className="dwarf-list">
         {people.map((person) => {
           const status = personStatus(person);
-          const isAway = status === "expedition";
+          const isBusyWithTask = person.task !== null;
           const specialty = person.specialty
             ? `Skilled in ${jobLabel(person.specialty)}`
             : "Generalist";
 
           return (
             <article
-              className={isAway ? "dwarf away" : "dwarf"}
+              className={isBusyWithTask ? "dwarf away" : "dwarf"}
               key={person.id}
             >
               <div className="portrait">
@@ -55,7 +55,7 @@ export function DwarfRoster({ people, onAssign }: Props) {
 
                 <select
                   value={person.assignment ?? ""}
-                  disabled={isAway}
+                  disabled={isBusyWithTask}
                   onChange={(event) =>
                     onAssign(
                       person.id,
