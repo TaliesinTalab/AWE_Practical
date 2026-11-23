@@ -37,10 +37,10 @@ This document defines the manual verification scenarios for requirements **D1 th
    - **Precondition:** Equip a tool to a dwarf assigned to Woodcutting (and repeat for Deep Mining / Mushroom Farm).
    - **Action:** Advance one simulation day.
    - **Expected:** Output increases by `+1` unit of the assigned resource per day (e.g., Woodcutting `3 -> 4`, Deep Mining `2 -> 3`, Mushroom Farm `4 -> 5`), and the Shift Ledger reflects the boosted output.
-3. **Weapon recipe and resource display** *(update material cost once TD-3 is decided)*
+3. **Weapon recipe and resource display**
    - **Precondition:** Open the Forge page with sufficient materials for a weapon.
    - **Action:** Inspect the displayed weapon recipe and craft a weapon.
-   - **Expected:** Material cost is clearly displayed on the Forge page; crafting deducts materials and increments stored `weapons` in the resource bar rather than assigning a weapon to an individual resident.
+   - **Expected:** The Forge page displays the TD-3 recipe cost (`4 wood + 3 stone -> 1 weapon`); crafting with at least `4 wood` and `3 stone` deducts `4 wood` and `3 stone` and increments `weapons` by `1` in the resource bar, while crafting with insufficient wood or stone leaves resources unchanged and records a warning in the Hold Chronicle.
 
 ---
 

@@ -1,4 +1,5 @@
 import { advanceDay, jobLabel } from "../simulation";
+import { equipItem, forgeWeapon, unequipItem } from "../game/equipment";
 import type {
   Activity,
   ColonyState,
@@ -14,6 +15,7 @@ export type ColonyAction =
   | { type: "advanceDay" }
   | { type: "assignJob"; personId: string; job: JobType }
   | { type: "forgeTool" }
+  | { type: "craftWeapon" }
   | { type: "equip"; personId: string; item: Equipment }
   | { type: "unequip"; personId: string }
   | { type: "startCraft"; personId: string; item: CraftItem }
@@ -141,10 +143,14 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
     }
 
     // Filled in by D2.
+    case "craftWeapon":
+      return forgeWeapon(state);
+
     case "equip":
-      return state;
+      return equipItem(state, action.personId, action.item);
+
     case "unequip":
-      return state;
+      return unequipItem(state, action.personId);
 
     // Filled in by D3.
     case "startCraft":

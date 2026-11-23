@@ -1,48 +1,67 @@
-import { useEffect, useReducer, useState, type ReactNode } from "react";
+import { useEffect, useReducer, useRef, useState, type ReactNode } from "react";
 import { beginExpedition } from "../api";
-import type { JobType } from "../types";
-import { ColonyContext, type ColonyContextValue } from "./ColonyContext";
+import { ColonyContext } from "./ColonyContext";
 import { availablePerson, colonyReducer, initialColony } from "./colonyReducer";
+import type { JobType } from "../types";
+
+const DAY_MS = 10_000;
 
 export function ColonyProvider({ children }: { children: ReactNode }) {
-  const [colony, dispatch] = useReducer(colonyReducer, initialColony);
+  const [state, dispatch] = useReducer(colonyReducer, initialColony);
   const [paused, setPaused] = useState(false);
+  const [expeditionPending, setExpeditionPending] = useState(false);
+  const expeditionRef = useRef(false);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     if (paused) return;
-
-    const timer = window.setInterval(
-      () => dispatch({ type: "advanceDay" }),
-      8_000,
-    );
-
-    return () => window.clearInterval(timer);
+    const id = window.setInterval(() => dispatch({ type: "advanceDay" }), DAY_MS);
+    return () => window.clearInterval(id);
   }, [paused]);
 
-  async function sendExpedition(personId: string, destination: string) {
-    if (!availablePerson(colony, personId)) return;
+  const togglePaused = () => setPaused((wasPaused) => !wasPaused);
+  const assignPerson = (personId: string, job: JobType) => dispatch({ type: "assignJob", personId, job });
+  const craftTool = () => dispatch({ type: "forgeTool" });
+  const craftWeapon = () => dispatch({ type: "craftWeapon" });
+  const equipTool = (personId: string) => dispatch({ type: "equip", personId, item: "tool" });
+  const unequipItem = (personId: string) => dispatch({ type: "unequip", personId });
 
+  const sendExpedition = async (personId: string, destination: string) => {
+    const currentState = stateRef.current;
+    if (expeditionRef.current || availablePerson(currentState, personId) === undefined) return;
+    expeditionRef.current = true;
+    setExpeditionPending(true);
     dispatch({ type: "startExpedition", personId, destination });
-
     try {
       const result = await beginExpedition(personId, destination);
       dispatch({ type: "completeExpedition", personId, result });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "The expedition was lost from view.";
+      const message = error instanceof Error ? error.message : "The expedition did not return.";
       dispatch({ type: "failExpedition", personId, message });
+    } finally {
+      expeditionRef.current = false;
+      setExpeditionPending(false);
     }
-  }
-
-  const value: ColonyContextValue = {
-    colony,
-    paused,
-    activities: colony.activities,
-    expeditionPending: colony.people.some((person) => person.task?.kind === "expedition"),
-    togglePaused: () => setPaused((value) => !value),
-    assignPerson: (personId: string, job: JobType) => dispatch({ type: "assignJob", personId, job }),
-    craftTool: () => dispatch({ type: "forgeTool" }),
-    sendExpedition,
   };
 
-  return <ColonyContext value={value}>{children}</ColonyContext>;
+  return (
+    <ColonyContext.Provider
+      value={{
+        colony: state,
+        paused,
+        activities: state.activities,
+        expeditionPending,
+        togglePaused,
+        assignPerson,
+        craftTool,
+        craftWeapon,
+        equipTool,
+        unequipItem,
+        sendExpedition,
+      }}
+    >
+      {children}
+    </ColonyContext.Provider>
+  );
 }

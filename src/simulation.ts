@@ -4,6 +4,12 @@ export const production: Record<Exclude<JobType, null>, Partial<Resources>> = {
   woodcutting: { wood: 3 }, mining: { stone: 2 }, farming: { food: 4 },
 };
 
+const jobResourceKey: Record<Exclude<JobType, null>, keyof Resources> = {
+  woodcutting: "wood",
+  mining: "stone",
+  farming: "food",
+};
+
 const CHRONICLE_LIMIT = 6;
 
 export function dailyProduction(state: Pick<ColonyState, "people" | "hungry">): Resources {
@@ -19,12 +25,16 @@ export function dailyProduction(state: Pick<ColonyState, "people" | "hungry">): 
       gained[resource as keyof Resources] += amount ?? 0;
     });
 
+    if (person.equipment === "tool") {
+      gained[jobResourceKey[person.assignment]] += 1;
+    }
+
   });  
 
   return gained;
 }
 
-function appendActivity(activities: Activity[], day: number, message: string, tone?: Activity["tone"]): Activity[] {
+export function appendActivity(activities: Activity[], day: number, message: string, tone?: Activity["tone"]): Activity[] {
   const id = (activities[0]?.id ?? 0) + 1;
   return [{ id, day, message, tone }, ...activities].slice(0, CHRONICLE_LIMIT);
 }
