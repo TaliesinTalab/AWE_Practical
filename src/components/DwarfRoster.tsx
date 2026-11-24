@@ -64,7 +64,7 @@ export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onU
                 <p>{equippedLabel}</p>
 
                 <select
-                  value={person.assignment ?? ""}
+                  value={person.task ? "task" : person.assignment ?? ""}
                   disabled={isBusyWithTask}
                   onChange={(event) =>
                     onAssign(
@@ -74,6 +74,13 @@ export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onU
                   }
                 >
                   <option value="">Unassigned</option>
+                  {person.task && (
+                    <option value="task">
+                      {person.task.kind === "forge"
+                        ? `Forging until day ${person.task.doneOnDay}`
+                        : "On expedition"}
+                    </option>
+                  )}
                   {jobs.map((job) => (
                     <option value={job} key={job}>
                       {jobLabel(job)}

@@ -49,11 +49,14 @@ This document defines the manual verification scenarios for requirements **D1 th
 1. **Start valid forge task (materials, eligible resident, duration)** *(TD-4: tool 1 day, weapon 2 days)*
    - **Precondition:** Sufficient materials and an eligible resident (present, not on an expedition, not already crafting).
    - **Action:** Start forging a tool (and in a separate check, a weapon).
-   - **Expected:** Materials are deducted at the start; the UI shows who is crafting and on which day it completes; the crafter is marked busy and produces no local job output while crafting; upon reaching the completion day, the item is added to inventory and the resident becomes available again.
+   - **Expected:** Materials are deducted at the start; the UI shows who is crafting and on which day it completes; the crafter is marked busy and produces no local job output while crafting; upon reaching the completion day, the item is added to inventory and the resident becomes available again. The footer names the crafter while the forge is in use.
 2. **Reject invalid crafting attempts**
-   - **Precondition:** Test (a) insufficient materials, (b) no eligible resident, and (c) forge already occupied by an active task.
-   - **Action:** Attempt to start a forge task in each invalid state.
-   - **Expected:** The attempt is rejected with feedback; neither resident states nor resource counts change.
+   - **Precondition:** Test (a) insufficient materials, (b) a chosen crafter who is busy, (c) forge already occupied by an active task, and (d) a hungry hold.
+   - **Action:** Try to start a forge task in each invalid state.
+   - **Expected:** The recipe button is disabled and the reason is shown next to it; neither residents, resources nor the chronicle change.
+3. **No immediate crafting**
+   - **Action:** Start a tool while the simulation is paused.
+   - **Expected:** The materials are taken, but the tool count does not rise until the day changes.
 
 ---
 

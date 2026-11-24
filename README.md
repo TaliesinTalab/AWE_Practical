@@ -6,7 +6,7 @@ This is a partially completed starter for the Advanced Web Development practical
 
 ## How the game works
 
-The colony advances in **days**. One day passes every eight seconds while the simulation is active. The Pause button stops this clock.
+The colony advances in **days**. One day passes every ten seconds while the simulation is active. The Pause button stops this clock.
 
 Each dwarf can have one of these local assignments:
 
@@ -31,18 +31,22 @@ The shared inventory contains:
 - **Stone**, gathered by miners.
 - **Food**, gathered by farmers and consumed by the company.
 - **Tools**, produced at the forge or discovered on expeditions.
+- **Weapons**, produced at the forge and kept as a colony resource for hostile events.
 
 A stored tool can be equipped to a dwarf in the roster and returned to the stores there. An equipped tool adds one unit of the dwarf's assigned resource per day on any local job (Woodcutting 3 -> 4, Deep Mining 2 -> 3, Mushroom Farm 4 -> 5). A dwarf carries at most one tool. A dwarf who leaves on an expedition keeps the tool, and it can only be returned by hand once the dwarf is back. Tools have no durability.
 
 ### Ember Forge
 
-The forge performs an immediate crafting action:
+Forging is colony work. It needs materials, a free dwarf and time:
 
 ```text
-3 wood + 2 stone -> 1 tool
+3 wood + 2 stone -> 1 tool     (1 day)
+4 wood + 3 stone -> 1 weapon   (2 days)
 ```
 
-Open the **Forge** page and press **Forge tool** to attempt the recipe. A successful craft removes the materials, adds a tool to the shared inventory, and records the result in the Hold Chronicle. Forging is separate from the automatic eight-second job production.
+Open the **Forge** page, choose a crafter and press a recipe button. The materials are taken at once, and the item joins the stores when the stated day is reached. The forge handles one task at a time. The crafter does no local job and cannot leave on an expedition until the task is done. The page shows who is forging and on which day the result completes.
+
+A recipe button is disabled, with the reason next to it, when the materials are missing, the chosen dwarf is busy, the forge is occupied or the hold is hungry.
 
 ### Expeditions
 
@@ -62,7 +66,7 @@ The short delay is deliberate, so that expedition behavior provides a realistic 
 
 - Three named dwarves with assignments, status, and optional specialization.
 - Woodcutting, mining, and farming jobs.
-- An automatic eight-second simulation tick with pause/resume.
+- An automatic ten-second simulation tick with pause/resume.
 - Shared wood, stone, food, and tool inventories.
 - Daily food consumption.
 - One interactive forge recipe.

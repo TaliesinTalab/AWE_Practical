@@ -2,9 +2,9 @@ import { useEffect, useReducer, useRef, useState, type ReactNode } from "react";
 import { beginExpedition } from "../api";
 import { ColonyContext } from "./ColonyContext";
 import { availablePerson, colonyReducer, initialColony } from "./colonyReducer";
-import type { JobType } from "../types";
+import type { CraftItem, JobType } from "../types";
 
-const DAY_MS = 10_000;
+export const DAY_MS = 10_000;
 
 export function ColonyProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(colonyReducer, initialColony);
@@ -22,8 +22,7 @@ export function ColonyProvider({ children }: { children: ReactNode }) {
 
   const togglePaused = () => setPaused((wasPaused) => !wasPaused);
   const assignPerson = (personId: string, job: JobType) => dispatch({ type: "assignJob", personId, job });
-  const craftTool = () => dispatch({ type: "forgeTool" });
-  const craftWeapon = () => dispatch({ type: "craftWeapon" });
+  const startCraft = (personId: string, item: CraftItem) => dispatch({ type: "startCraft", personId, item });
   const equipTool = (personId: string) => dispatch({ type: "equip", personId, item: "tool" });
   const unequipItem = (personId: string) => dispatch({ type: "unequip", personId });
 
@@ -54,8 +53,7 @@ export function ColonyProvider({ children }: { children: ReactNode }) {
         expeditionPending,
         togglePaused,
         assignPerson,
-        craftTool,
-        craftWeapon,
+        startCraft,
         equipTool,
         unequipItem,
         sendExpedition,

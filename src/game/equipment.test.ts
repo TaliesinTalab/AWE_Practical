@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { equipItem, forgeWeapon, unequipItem, WEAPON_COST } from "./equipment";
+import { equipItem, unequipItem } from "./equipment";
 import { colonyReducer, initialColony } from "../state/colonyReducer";
 import type { ColonyState } from "../types";
 
@@ -41,25 +41,6 @@ describe("equipment and weapon recipe rules", () => {
       ],
     });
     expect(equipItem(busy, "d1", "tool")).toBe(busy);
-  });
-
-  it("forges a weapon using WEAPON_COST and keeps resources non-negative on shortage", () => {
-    const start = makeState({
-      resources: { wood: 8, stone: 6, food: 10, tools: 0, weapons: 0, panFlutes: 0 },
-    });
-    const forged = forgeWeapon(start);
-    expect(forged.resources).toMatchObject({
-      wood: 8 - WEAPON_COST.wood,
-      stone: 6 - WEAPON_COST.stone,
-      weapons: 1,
-    });
-
-    const poor = makeState({
-      resources: { wood: 3, stone: 3, food: 10, tools: 0, weapons: 0, panFlutes: 0 },
-    });
-    const failed = forgeWeapon(poor);
-    expect(failed.resources).toEqual(poor.resources); //check nothing was deducted (same before and after)
-    expect(failed.activities[0].tone).toBe("warning");
   });
 
   it("does not mutate previous state and is deterministic", () => {

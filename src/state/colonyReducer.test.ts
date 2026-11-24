@@ -14,18 +14,6 @@ const succeed: ColonyAction = { type: "completeExpedition", personId: "dwarf-3",
 const person3 = (state: typeof initialColony) => state.people.find((person) => person.id === "dwarf-3");
 
 describe("colony reducer", () => {
-  it("does not forge without enough stone", () => {
-    const poor = { ...initialColony, resources: { ...initialColony.resources, stone: 1 } };
-    const next = colonyReducer(poor, { type: "forgeTool" });
-    expect(next.resources).toEqual(poor.resources);
-    expect(next.activities[0].tone).toBe("warning");
-  });
-
-  it("forges a tool from 3 wood and 2 stone", () => {
-    const next = colonyReducer(initialColony, { type: "forgeTool" });
-    expect(next.resources).toMatchObject({ wood: 11, stone: 7, tools: 2 });
-  });
-
   it("sends an available person only once", () => {
     const away = colonyReducer(initialColony, depart);
     expect(person3(away)?.task).toEqual({ kind: "expedition", destination: "crystal-cave" });
@@ -54,7 +42,9 @@ describe("colony reducer", () => {
 
   it("keeps the chronicle at 16 entries with unique ids", () => {
     let state = initialColony;
-    for (let i = 0; i < 20; i++) state = colonyReducer(state, { type: "forgeTool" });
+    for (let i = 0; i < 20; i++) {
+      state = colonyReducer(state, { type: "assignJob", personId: "dwarf-3", job: i % 2 ? "mining" : "farming" });
+    }
     expect(state.activities).toHaveLength(16);
     expect(new Set(state.activities.map((activity) => activity.id)).size).toBe(16);
   });
