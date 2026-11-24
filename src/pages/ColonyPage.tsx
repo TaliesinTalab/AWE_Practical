@@ -9,6 +9,7 @@ import type { ResourceKey } from "../types";
 export function ColonyPage() {
   const {
     colony,
+    paused,
     activities,
     expeditionPending,
     assignPerson,
@@ -18,7 +19,7 @@ export function ColonyPage() {
   } = useColony();
   const [destination, setDestination] = useState("crystal-cave");
   const [expeditionPerson, setExpeditionPerson] = useState(colony.people[0]?.id ?? "");
-  const canSend = !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
+  const canSend = !paused && !colony.hungry && !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
 
   const gained = dailyProduction(colony);
   const netFood = gained.food - colony.people.length;

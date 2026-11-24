@@ -82,7 +82,7 @@ function isTravelling(state: ColonyState, personId: string): boolean {
 function updatePerson(state: ColonyState, personId: string, change: Partial<Person>): ColonyState {
   return {
     ...state,
-    people: state.people.map((person) => person.id === personId ? { ...person, ...change } : person),
+    people: state.people.map((person) => (person.id === personId ? { ...person, ...change } : person)),
   };
 }
 

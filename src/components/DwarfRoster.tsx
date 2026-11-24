@@ -91,7 +91,11 @@ export function DwarfRoster({ people, onAssign, availableTools = 0, onEquipTool,
                   </button>
                 )}
                 {person.equipment !== null && onUnequip && (
-                  <button type="button" onClick={() => onUnequip(person.id)}>
+                  <button
+                    type="button"
+                    disabled={isBusyWithTask}
+                    onClick={() => onUnequip(person.id)}
+                  >
                     Return {person.equipment === "tool" ? "tool" : "pan flute"}
                   </button>
                 )}

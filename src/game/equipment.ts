@@ -44,7 +44,7 @@ export function equipItem(state: ColonyState, personId: string, item: Equipment)
 
 export function unequipItem(state: ColonyState, personId: string): ColonyState {
   const person = state.people.find((entry) => entry.id === personId);
-  if (!person || person.equipment === null) return state;
+  if (!person || person.task !== null || person.equipment === null) return state;
 
   const returnedResource = person.equipment === "tool" ? "tools" : "panFlutes";
   const nextState = updatePerson(
