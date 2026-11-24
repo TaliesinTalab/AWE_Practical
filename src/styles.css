@@ -241,7 +241,8 @@ small {
 }
 
 .dwarf select,
-.expedition select {
+.expedition select,
+.forge select {
   width: 100%;
   background: #100e0b;
   color: #d8c8ae;
@@ -318,7 +319,7 @@ small {
   color: #d47459;
 }
 
-.forge {
+.panel.forge {
   display: flex;
   justify-content: space-between;
   padding: 17px;
@@ -358,7 +359,7 @@ small {
   cursor: pointer;
 }
 
-.expedition {
+.panel.expedition {
   padding-bottom: 13px;
 }
 
@@ -370,7 +371,8 @@ small {
   font-size: 28px;
 }
 
-.expedition label {
+.expedition label,
+.forge label {
   display: block;
   margin: 8px 13px;
   font: 600 10px Barlow Condensed;
@@ -378,7 +380,8 @@ small {
   color: #9e8566;
 }
 
-.expedition select {
+.expedition select,
+.forge select {
   display: block;
   margin-top: 5px;
 }
@@ -390,7 +393,8 @@ small {
 }
 
 .expedition button:disabled,
-.dwarf button:disabled {
+.dwarf button:disabled,
+.recipe button:disabled {
   opacity: .5;
 }
 

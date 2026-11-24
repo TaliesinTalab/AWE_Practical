@@ -1,11 +1,6 @@
 import { appendActivity } from "../simulation";
 import type { ColonyState, Equipment, Person } from "../types";
 
-export const WEAPON_COST = {
-  wood: 4,
-  stone: 3,
-} as const;
-
 // circular > dry
 function updatePerson(state: ColonyState, personId: string, change: Partial<Person>): ColonyState {
   return {
@@ -67,31 +62,5 @@ export function unequipItem(state: ColonyState, personId: string): ColonyState {
       state.day,
       `${person.name} returned a ${itemLabel} to stores.`,
     ),
-  };
-}
-
-export function forgeWeapon(state: ColonyState): ColonyState {
-  const { wood, stone, weapons } = state.resources;
-  if (wood < WEAPON_COST.wood || stone < WEAPON_COST.stone) {
-    return {
-      ...state,
-      activities: appendActivity(
-        state.activities,
-        state.day,
-        `The forge needs ${WEAPON_COST.wood} timber and ${WEAPON_COST.stone} stone for a weapon.`,
-        "warning",
-      ),
-    };
-  }
-
-  return {
-    ...state,
-    resources: {
-      ...state.resources,
-      wood: wood - WEAPON_COST.wood,
-      stone: stone - WEAPON_COST.stone,
-      weapons: weapons + 1,
-    },
-    activities: appendActivity(state.activities, state.day, "A weapon joins the armory.", "good"),
   };
 }

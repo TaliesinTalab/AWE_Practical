@@ -1,5 +1,6 @@
 import { advanceDay, appendActivity, jobLabel } from "../simulation";
-import { equipItem, forgeWeapon, unequipItem } from "../game/equipment";
+import { completeCrafts, startCraft } from "../game/crafting";
+import { equipItem, unequipItem } from "../game/equipment";
 import type {
   Activity,
   ColonyState,
@@ -14,8 +15,6 @@ import type {
 export type ColonyAction =
   | { type: "advanceDay" }
   | { type: "assignJob"; personId: string; job: JobType }
-  | { type: "forgeTool" }
-  | { type: "craftWeapon" }
   | { type: "equip"; personId: string; item: Equipment }
   | { type: "unequip"; personId: string }
   | { type: "startCraft"; personId: string; item: CraftItem }
@@ -92,7 +91,7 @@ function record(state: ColonyState, message: string, tone?: Activity["tone"]): C
 export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyState {
   switch (action.type) {
     case "advanceDay":
-      return advanceDay(state);
+      return completeCrafts(advanceDay(state));
 
     case "assignJob": {
       const person = availablePerson(state, action.personId);
@@ -100,16 +99,6 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
       return record(
         updatePerson(state, person.id, { assignment: action.job }),
         `${person.name} assigned to ${jobLabel(action.job)}.`,
-      );
-    }
-
-    case "forgeTool": {
-      const { wood, stone, tools } = state.resources;
-      if (wood < 3 || stone < 2) return record(state, "The forge needs 3 timber and 2 stone.", "warning");
-      return record(
-        { ...state, resources: { ...state.resources, wood: wood - 3, stone: stone - 2, tools: tools + 1 } },
-        "A sturdy iron tool joins the stores.",
-        "good",
       );
     }
 
@@ -139,9 +128,6 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
     }
 
     // Filled in by D2.
-    case "craftWeapon":
-      return forgeWeapon(state);
-
     case "equip":
       return equipItem(state, action.personId, action.item);
 
@@ -150,6 +136,6 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
 
     // Filled in by D3.
     case "startCraft":
-      return state;
+      return startCraft(state, action.personId, action.item);
   }
 }
