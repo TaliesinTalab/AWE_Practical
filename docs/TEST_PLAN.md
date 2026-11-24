@@ -91,9 +91,9 @@ This document defines the manual verification scenarios for requirements **D1 th
    - **Precondition:** Open DevTools `Application -> Local Storage` and edit the save entry to (a) invalid JSON, (b) missing/wrong schema version, or (c) invalid field types/negative resources.
    - **Action:** Refresh the browser.
    - **Expected:** The app does not crash; it falls back safely to a fresh colony state and informs the player via the UI/chronicle.
-3. **Interrupted forge task and expedition on refresh** *(update once TD-6 is decided)*
-   - **Precondition:** Start (a) an active forge task and (b) an in-flight expedition (`?latency=5000`), then refresh the browser before either finishes.
-   - **Expected:** Both interrupted tasks follow the documented policy (e.g., day-based forge task resumes its remaining days; interrupted expedition returns the traveller with no reward or attack and logs an explanation in the chronicle).
+3. **Interrupted forge task and expedition on refresh**
+   - **Precondition:** Start (a) a weapon at the forge (2 days) and (b) an expedition to The Old Mine (2 days), then refresh the browser before either finishes.
+   - **Expected:** Both continue. The forge panel and the expedition panel show the same person and the same day as before the refresh, the chronicle states that the hold was restored and tasks under way continue, the weapon arrives on its day, and the traveller returns on the return day with the reward applied once (one request in the Network tab).
 
 ---
 

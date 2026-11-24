@@ -3,12 +3,13 @@ import { beginExpedition } from "../api";
 import { ColonyContext } from "./ColonyContext";
 import { colonyReducer, initialColony } from "./colonyReducer";
 import { dueTraveller } from "../game/expeditions";
+import { loadColony, saveColony } from "./persistence";
 import type { CraftItem, JobType } from "../types";
 
 export const DAY_MS = 10_000;
 
 export function ColonyProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(colonyReducer, initialColony);
+  const [state, dispatch] = useReducer(colonyReducer, initialColony, loadColony);
   const [paused, setPaused] = useState(false);
   const requestRef = useRef(false);
 
@@ -17,6 +18,8 @@ export function ColonyProvider({ children }: { children: ReactNode }) {
     const id = window.setInterval(() => dispatch({ type: "advanceDay" }), DAY_MS);
     return () => window.clearInterval(id);
   }, [paused]);
+
+  useEffect(() => saveColony(state), [state]);
 
   useEffect(() => {
     const person = dueTraveller(state);
