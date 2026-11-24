@@ -17,7 +17,7 @@ Each dwarf can have one of these local assignments:
 | Mushroom Farm | 4 food |
 | Unassigned | No production |
 
-At the end of each day, the colony consumes one food for every dwarf. With the initial company of three dwarves, daily meals therefore consume three food. The Shift Ledger shows current assignments and expected production.
+At the end of each day, the colony consumes one food for every dwarf in the hold. With the initial company of three dwarves, daily meals therefore consume three food. A dwarf who is away on an expedition is not counted, because the rations for the journey are taken at departure. The Shift Ledger shows current assignments and expected production.
 
 If the food cannot cover every meal, the stores drop to zero and the hold goes hungry: only the Mushroom Farm produces and no expedition can leave. The hold recovers as soon as a day ends with everyone fed. The Shift Ledger shows a notice for as long as the hold is hungry.
 
@@ -50,15 +50,17 @@ A recipe button is disabled, with the reason next to it, when the materials are 
 
 ### Expeditions
 
-The expedition panel lets you select a dwarf and one destination. Sending an expedition starts an asynchronous request to the local API. The selected dwarf is shown as away while the request is in progress. A successful result returns the dwarf and adds the destination's rewards to the inventory and an unsuccessful result is reported in the chronicle.
+The expedition panel lets you select a dwarf and one destination. A journey lasts a number of days and takes one ration per day from the stores at departure. Without enough rations the expedition cannot start. Only one expedition is under way at a time, and none can leave while the hold is hungry.
+
+The traveller is away until the return day: no local job, no forging, no reassignment. An equipped tool travels with its owner and can only be returned to the stores once they are home. On the return day the game asks the local API what the traveller found. A successful answer brings the dwarf home and adds the rewards to the inventory exactly once. A failed or unanswered request (the game stops waiting after 8 seconds) brings the dwarf home without rewards and is reported in the chronicle. The rations are not refunded.
 
 The starter destinations:
 
-| Destination | Current outcome |
-|---|---|
-| Crystal Cave | 8 stone and 1 tool |
-| The Old Mine | 12 stone and 2 wood |
-| Blocked Pass | A predictable failed expedition |
+| Destination | Days | Current outcome |
+|---|---:|---|
+| Crystal Cave | 1 | 8 stone and 1 tool |
+| The Old Mine | 2 | 12 stone and 2 wood |
+| Blocked Pass | 1 | A predictable failed expedition |
 
 The short delay is deliberate, so that expedition behavior provides a realistic place to reason about promises, loading state, failures, and consistency between worker and resource state.
 

@@ -36,7 +36,7 @@ describe("crafting as colony work", () => {
   it("returns the state unchanged for every invalid attempt", () => {
     const poor = makeState({ resources: { wood: 2, stone: 10, food: 10, tools: 0, weapons: 0, panFlutes: 0 } });
     const hungry = makeState({ hungry: true });
-    const away = makeState({ people: [person("d1", { task: { kind: "expedition", destination: "old-mine" } })] });
+    const away = makeState({ people: [person("d1", { task: { kind: "expedition", destination: "old-mine", returnOnDay: 7 } })] });
     const occupied = startCraft(makeState(), "d1", "tool");
 
     expect(startCraft(poor, "d1", "tool")).toBe(poor);

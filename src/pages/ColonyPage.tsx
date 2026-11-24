@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { Chronicle } from "../components/Chronicle";
 import { DwarfRoster } from "../components/DwarfRoster";
-import { dailyProduction, jobLabel } from "../simulation";
+import { DESTINATIONS, expeditionBlocker, traveller } from "../game/expeditions";
+import { dailyProduction, jobLabel, mealsNeeded } from "../simulation";
 import { useColony } from "../state/ColonyContext";
-import { availablePerson } from "../state/colonyReducer";
 import type { ResourceKey } from "../types";
 
 export function ColonyPage() {
   const {
     colony,
-    paused,
     activities,
-    expeditionPending,
     assignPerson,
     sendExpedition,
     equipTool,
@@ -19,10 +17,13 @@ export function ColonyPage() {
   } = useColony();
   const [destination, setDestination] = useState("crystal-cave");
   const [expeditionPerson, setExpeditionPerson] = useState(colony.people[0]?.id ?? "");
-  const canSend = !paused && !colony.hungry && !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
+  const blocker = expeditionBlocker(colony, expeditionPerson, destination);
+  const away = traveller(colony);
+  const journey = away?.task?.kind === "expedition" ? away.task : null;
+  const days = DESTINATIONS[destination]?.days ?? 0;
 
   const gained = dailyProduction(colony);
-  const netFood = gained.food - colony.people.length;
+  const netFood = gained.food - mealsNeeded(colony);
 
   const jobGainKey: Record<"woodcutting" | "mining" | "farming", ResourceKey> = {
     woodcutting: "wood",
@@ -123,21 +124,28 @@ export function ColonyPage() {
               value={destination}
               onChange={(event) => setDestination(event.target.value)}
             >
-              <option value="crystal-cave">Crystal Cave</option>
-              <option value="old-mine">The Old Mine</option>
-              <option value="blocked-pass">Blocked Pass</option>
+              {Object.entries(DESTINATIONS).map(([id, place]) => (
+                <option key={id} value={id}>
+                  {place.label} ({place.days} {place.days === 1 ? "day" : "days"})
+                </option>
+              ))}
             </select>
           </label>
 
           <button
-            disabled={!canSend}
+            disabled={blocker !== null}
             onClick={() => sendExpedition(expeditionPerson, destination)}
           >
-            {expeditionPending ? "Beyond the gate…" : "Send expedition"}
+            {away ? "Beyond the gate…" : "Send expedition"}
           </button>
           <p>
-            A result returns in one request. The selected dwarf is unavailable
-            while travelling.
+            {away && journey
+              ? `${away.name} is away at ${DESTINATIONS[journey.destination]?.label}. Back on day ${journey.returnOnDay}.`
+              : blocker ?? `The journey takes ${days} ${days === 1 ? "ration" : "rations"} from the stores at departure.`}
+          </p>
+          <p>
+            A traveller keeps an equipped tool and cannot work, forge or be
+            reassigned until home.
           </p>
         </section>
 
@@ -145,4 +153,4 @@ export function ColonyPage() {
       </aside>
     </div>
   );
-}
+}

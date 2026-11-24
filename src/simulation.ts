@@ -34,6 +34,10 @@ export function dailyProduction(state: Pick<ColonyState, "people" | "hungry">): 
   return gained;
 }
 
+export function mealsNeeded(state: Pick<ColonyState, "people">): number {
+  return state.people.filter((person) => person.task?.kind !== "expedition").length;
+}
+
 export function appendActivity(activities: Activity[], day: number, message: string, tone?: Activity["tone"]): Activity[] {
   const id = (activities[0]?.id ?? 0) + 1;
   return [{ id, day, message, tone }, ...activities].slice(0, CHRONICLE_LIMIT);
@@ -45,7 +49,7 @@ export function advanceDay(state: ColonyState): ColonyState {
   const resources: Resources = {
     wood: state.resources.wood + gained.wood,
     stone: state.resources.stone + gained.stone,
-    food: state.resources.food + gained.food - state.people.length,
+    food: state.resources.food + gained.food - mealsNeeded(state),
     tools: state.resources.tools + gained.tools,
     weapons: state.resources.weapons + gained.weapons,
     panFlutes: state.resources.panFlutes + gained.panFlutes,

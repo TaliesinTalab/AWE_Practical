@@ -62,19 +62,20 @@ This document defines the manual verification scenarios for requirements **D1 th
 
 ## D4 — Resilient expeditions (10%)
 
-1. **Successful expedition and single reward application**
-   - **Precondition:** Select an eligible dwarf and `crystal-cave` (or `old-mine`).
-   - **Action:** Send the expedition and wait for completion.
-   - **Expected:** The dwarf is shown as away while travelling, cannot be reassigned or sent on another expedition, and produces no local job output; upon completion, the dwarf returns and rewards (`+8 stone, +1 tool` for Crystal Cave) are added exactly once.
-2. **Failed expedition recovery (`blocked-pass` and `?fail=true`)**
-   - **Precondition:** Select an eligible dwarf and `blocked-pass` (or trigger `?fail=true`).
-   - **Action:** Send the expedition and wait for the 503 response.
-   - **Expected:** No rewards are awarded, a warning appears in the chronicle, and the dwarf returns to available status immediately without being stuck away.
-3. **Slow network and repeated clicks (`?latency=4000`)**
-   - **Precondition:** Use elevated API latency (e.g., `?latency=4000`).
-   - **Action:** Rapidly click "Send expedition" multiple times and attempt to reassign the travelling dwarf while the request is in flight.
-   - **Expected:** Only one expedition starts; duplicate clicks and reassignments are ignored without contradictory state.
-4. **Tool handling on expedition departure** *(TD-5: the traveller keeps the tool)*
+1. **Successful expedition in days, single reward**
+   - **Precondition:** Fresh colony (`day 12`, `food: 18`), an eligible dwarf, The Old Mine (2 days).
+   - **Action:** Send the expedition and let two days pass.
+   - **Expected:** `2` rations leave the stores at departure; the panel and the roster show the traveller and return day `14`; the traveller does no local job and is not counted at meals; exactly one request is sent when day `14` begins, and the rewards (`+12 stone, +2 wood`) are added exactly once.
+2. **Failed expedition recovery (`blocked-pass`, or the API not running)**
+   - **Action:** Send a dwarf to Blocked Pass and wait for the return day. Repeat with the API stopped.
+   - **Expected:** No rewards, a readable warning in the chronicle, and the dwarf is home and available. The rations are not refunded.
+3. **Repeated clicks, second traveller, pause**
+   - **Action:** Click "Send expedition" rapidly; try to send a second dwarf while one is away; send a dwarf while the simulation is paused and wait.
+   - **Expected:** One departure and one ration deduction only; the second attempt is refused with a reason; while paused no request is sent and nothing changes until the simulation runs again.
+4. **Invalid departures**
+   - **Precondition:** (a) a hungry hold, (b) fewer rations than the journey needs, (c) a dwarf who is forging.
+   - **Expected:** The button is disabled with the reason shown; neither residents nor resources change.
+5. **Tool handling on expedition departure** *(TD-5: the traveller keeps the tool)*
    - **Precondition:** Equip a tool to an eligible dwarf, then send that dwarf to The Old Mine (no tool reward).
    - **Expected:** The stored tool count changes neither on departure nor on return; the roster still shows the tool on the traveller; the Return button is disabled while the dwarf is away and works again once the dwarf is back.
 

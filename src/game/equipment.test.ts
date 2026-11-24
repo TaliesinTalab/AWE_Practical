@@ -37,7 +37,7 @@ describe("equipment and weapon recipe rules", () => {
   it("does not equip a tool to someone with an active task", () => {
     const busy = makeState({
       people: [
-        { id: "d1", name: "Brom", title: "", icon: "", assignment: "mining", species: "dwarf", equipment: null, task: { kind: "expedition", destination: "crystal-cave" } },
+        { id: "d1", name: "Brom", title: "", icon: "", assignment: "mining", species: "dwarf", equipment: null, task: { kind: "expedition", destination: "crystal-cave", returnOnDay: 2 } },
       ],
     });
     expect(equipItem(busy, "d1", "tool")).toBe(busy);
@@ -56,7 +56,8 @@ describe("equipment and weapon recipe rules", () => {
     expect(away.resources.tools).toBe(0);
     expect(colonyReducer(away, { type: "unequip", personId: "dwarf-3" })).toBe(away);
 
-    const home = colonyReducer(away, {
+    const due = colonyReducer(colonyReducer(away, { type: "advanceDay" }), { type: "advanceDay" });
+    const home = colonyReducer(due, {
       type: "completeExpedition",
       personId: "dwarf-3",
       result: { expeditionId: "exp-1", status: "completed", rewards: { stone: 12, wood: 2 }, message: "Back." },
@@ -67,4 +68,4 @@ describe("equipment and weapon recipe rules", () => {
     const returned = colonyReducer(home, { type: "unequip", personId: "dwarf-3" });
     expect(returned.resources.tools).toBe(1);
   });
-});
+});

@@ -1,6 +1,7 @@
 import { advanceDay, appendActivity, jobLabel } from "../simulation";
 import { completeCrafts, startCraft } from "../game/crafting";
 import { equipItem, unequipItem } from "../game/equipment";
+import { completeExpedition, failExpedition, startExpedition } from "../game/expeditions";
 import type {
   Activity,
   ColonyState,
@@ -9,7 +10,6 @@ import type {
   Equipment,
   ExpeditionResult,
   JobType,
-  ResourceKey,
 } from "../types";
 
 export type ColonyAction =
@@ -72,10 +72,6 @@ export function availablePerson(state: ColonyState, personId: string): Person | 
   return state.people.find((person) => person.id === personId && person.task === null);
 }
 
-function isTravelling(state: ColonyState, personId: string): boolean {
-  return state.people.some((person) => person.id === personId && person.task?.kind === "expedition");
-}
-
 function updatePerson(state: ColonyState, personId: string, change: Partial<Person>): ColonyState {
   return {
     ...state,
@@ -102,30 +98,14 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
       );
     }
 
-    case "startExpedition": {
-      const person = availablePerson(state, action.personId);
-      if (!person) return state;
-      return record(
-        updatePerson(state, person.id, { task: { kind: "expedition", destination: action.destination } }),
-        `${person.name} departed for ${action.destination.replace("-", " ")}.`,
-      );
-    }
+    case "startExpedition":
+      return startExpedition(state, action.personId, action.destination);
 
-    case "completeExpedition": {
-      if (!isTravelling(state, action.personId)) return state;
-      const resources = { ...state.resources };
-      for (const [key, amount] of Object.entries(action.result.rewards)) resources[key as ResourceKey] += amount ?? 0;
-      return record(
-        updatePerson({ ...state, resources }, action.personId, { task: null }),
-        action.result.message,
-        "good",
-      );
-    }
+    case "completeExpedition":
+      return completeExpedition(state, action.personId, action.result);
 
-    case "failExpedition": {
-      if (!isTravelling(state, action.personId)) return state;
-      return record(updatePerson(state, action.personId, { task: null }), action.message, "warning");
-    }
+    case "failExpedition":
+      return failExpedition(state, action.personId, action.message);
 
     // Filled in by D2.
     case "equip":
@@ -138,4 +118,4 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
     case "startCraft":
       return startCraft(state, action.personId, action.item);
   }
-}
+}
