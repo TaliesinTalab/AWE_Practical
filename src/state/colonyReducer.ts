@@ -2,6 +2,7 @@ import { advanceDay, appendActivity, jobLabel } from "../simulation";
 import { completeCrafts, startCraft } from "../game/crafting";
 import { equipItem, unequipItem } from "../game/equipment";
 import { completeExpedition, failExpedition, startExpedition } from "../game/expeditions";
+import { canDoJob, completeCarving, startCarving } from "../game/newcomer";
 import type {
   Activity,
   ColonyState,
@@ -18,6 +19,7 @@ export type ColonyAction =
   | { type: "equip"; personId: string; item: Equipment }
   | { type: "unequip"; personId: string }
   | { type: "startCraft"; personId: string; item: CraftItem }
+  | { type: "startCarving" }
   | { type: "startExpedition"; personId: string; destination: string }
   | { type: "completeExpedition"; personId: string; result: ExpeditionResult }
   | { type: "failExpedition"; personId: string; message: string };
@@ -87,11 +89,11 @@ function record(state: ColonyState, message: string, tone?: Activity["tone"]): C
 export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyState {
   switch (action.type) {
     case "advanceDay":
-      return completeCrafts(advanceDay(state));
+      return completeCarving(completeCrafts(advanceDay(state)));
 
     case "assignJob": {
       const person = availablePerson(state, action.personId);
-      if (!person) return state;
+      if (!person || !canDoJob(person, action.job)) return state;
       return record(
         updatePerson(state, person.id, { assignment: action.job }),
         `${person.name} assigned to ${jobLabel(action.job)}.`,
@@ -117,5 +119,8 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
     // Filled in by D3.
     case "startCraft":
       return startCraft(state, action.personId, action.item);
+
+    case "startCarving":
+      return startCarving(state);
   }
 }

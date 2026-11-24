@@ -33,6 +33,7 @@ function isTask(value: unknown): value is Task | null {
   if (value.kind === "forge") {
     return typeof value.item === "string" && Object.hasOwn(RECIPES, value.item) && isCount(value.doneOnDay);
   }
+  if (value.kind === "carving") return isCount(value.doneOnDay);
   return false;
 }
 

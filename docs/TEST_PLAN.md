@@ -105,9 +105,9 @@ This document defines the manual verification scenarios for requirements **D1 th
    - **Expected:** The Satyr joins Stonehome after the first successful expedition (and does not join a second time on subsequent expeditions); a failed expedition to that destination does not trigger arrival.
 2. **Distinct UI representation and visible capabilities/limitations**
    - **Precondition:** Inspect the roster and Forge page after the newcomer joins.
-   - **Expected:** The Satyr is visually distinct from dwarves; their production difference (double food on Mushroom Farm) and crafting capability/limitation (can craft a pan flute for 4 wood; cannot wield standard tools; one equipped item max) are clearly visible before assignment or crafting.
+   - **Expected:** The Satyr is visually distinct from dwarves (own icon, title and a note in his roster row). His production difference (8 food on the Mushroom Farm, 2 wood, Deep Mining greyed out) and his crafting capability and limitation (carves a pan flute for 4 wood in 2 days; greyed out as forge crafter; no "Equip tool" button; one equipped item at most) are visible before assignment or crafting. Before he joins, the expedition panel hints at the Ominous Dungeon and the Forge page explains why the flute cannot be carved yet.
 3. **Participation in colony rules**
-   - **Action:** Test daily food consumption (`+1` meal/day), job assignment, pan flute crafting and equipping to a dwarf (`+2` wood bonus), expedition eligibility, and browser refresh persistence with the Satyr in the hold.
+   - **Action:** Test daily food consumption (`+1` meal/day), job assignment, pan flute carving (forge stays free, blocked while hungry), equipping a flute (`+3` wood on a woodcutting dwarf, `+3` food on any farmer, `11` food for the Satyr farming, no effect on a miner), expedition eligibility, and a browser refresh while the Satyr is carving.
    - **Expected:** All colony rules apply consistently without breaking invariants.
 
 ---

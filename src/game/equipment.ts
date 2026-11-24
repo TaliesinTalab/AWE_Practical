@@ -11,12 +11,13 @@ function updatePerson(state: ColonyState, personId: string, change: Partial<Pers
 
 //no tools equipped/available (panel) state = unchanged
 export function equipItem(state: ColonyState, personId: string, item: Equipment): ColonyState {
-  if (item !== "tool") return state;
-  if (state.resources.tools < 1) return state;
+  const store = item === "tool" ? "tools" : "panFlutes";
+  if (state.resources[store] < 1) return state;
 
   //person missing/task/equipped (panel) state = unchanged
   const person = state.people.find((entry) => entry.id === personId);
   if (!person || person.task !== null || person.equipment !== null) return state;
+  if (item === "tool" && person.species === "satyr") return state;
 
   //-1 tool, equip
   const nextState = updatePerson(
@@ -24,16 +25,16 @@ export function equipItem(state: ColonyState, personId: string, item: Equipment)
       ...state,
       resources: {
         ...state.resources,
-        tools: state.resources.tools - 1,
+        [store]: state.resources[store] - 1,
       },
     },
     person.id,
-    { equipment: "tool" },
+    { equipment: item },
   );
 
   return {
     ...nextState, //copy nextState as is, change only desired values
-    activities: appendActivity(nextState.activities, state.day, `${person.name} equipped a tool.`, "good"),
+    activities: appendActivity(nextState.activities, state.day, `${person.name} equipped a ${item === "tool" ? "tool" : "pan flute"}.`, "good"),
   };
 }
 

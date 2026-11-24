@@ -29,6 +29,16 @@ export function dailyProduction(state: Pick<ColonyState, "people" | "hungry">): 
       gained[jobResourceKey[person.assignment]] += 1;
     }
 
+    if (person.species === "satyr") {
+      const key = jobResourceKey[person.assignment];
+      gained[key] += person.assignment === "farming" ? (output[key] ?? 0) : -1;
+    }
+
+    if (person.equipment === "panFlute") {
+      if (person.assignment === "farming") gained.food += 3;
+      if (person.assignment === "woodcutting" && person.species === "dwarf") gained.wood += 3;
+    }
+
   });  
 
   return gained;

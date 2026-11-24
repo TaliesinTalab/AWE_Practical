@@ -45,7 +45,9 @@ export function ColonyProvider({ children }: { children: ReactNode }) {
   const togglePaused = () => setPaused((wasPaused) => !wasPaused);
   const assignPerson = (personId: string, job: JobType) => dispatch({ type: "assignJob", personId, job });
   const startCraft = (personId: string, item: CraftItem) => dispatch({ type: "startCraft", personId, item });
+  const startCarving = () => dispatch({ type: "startCarving" });
   const equipTool = (personId: string) => dispatch({ type: "equip", personId, item: "tool" });
+  const equipFlute = (personId: string) => dispatch({ type: "equip", personId, item: "panFlute" });
   const unequipItem = (personId: string) => dispatch({ type: "unequip", personId });
 
   const sendExpedition = (personId: string, destination: string) =>
@@ -60,7 +62,9 @@ export function ColonyProvider({ children }: { children: ReactNode }) {
         togglePaused,
         assignPerson,
         startCraft,
+        startCarving,
         equipTool,
+        equipFlute,
         unequipItem,
         sendExpedition,
       }}

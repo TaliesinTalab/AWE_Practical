@@ -1,3 +1,4 @@
+import { canDoJob, SATYR_NOTE } from "../game/newcomer";
 import { personStatus, jobLabel } from "../simulation";
 import type { Person, JobType } from "../types";
 
@@ -11,11 +12,13 @@ interface Props {
   people: Person[];
   onAssign: (id: string, job: JobType) => void;
   availableTools: number;
+  availableFlutes: number;
   onEquipTool: (id: string) => void;
+  onEquipFlute: (id: string) => void;
   onUnequip: (id: string) => void;
 }
 
-export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onUnequip }: Props) {
+export function DwarfRoster({ people, onAssign, availableTools, availableFlutes, onEquipTool, onEquipFlute, onUnequip }: Props) {
   const presentPeople = people.filter(
     (person) => personStatus(person) !== "expedition",
   ).length;
@@ -61,6 +64,7 @@ export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onU
                 <p>
                   {person.title} · {specialty}
                 </p>
+                {person.species === "satyr" && <p>{SATYR_NOTE}</p>}
                 <p>{equippedLabel}</p>
 
                 <select
@@ -78,23 +82,34 @@ export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onU
                     <option value="task">
                       {person.task.kind === "forge"
                         ? `Forging until day ${person.task.doneOnDay}`
-                        : `Away until day ${person.task.returnOnDay}`}
+                        : person.task.kind === "carving"
+                          ? `Carving until day ${person.task.doneOnDay}`
+                          : `Away until day ${person.task.returnOnDay}`}
                     </option>
                   )}
                   {jobs.map((job) => (
-                    <option value={job} key={job}>
+                    <option value={job} key={job} disabled={!canDoJob(person, job)}>
                       {jobLabel(job)}
                     </option>
                   ))}
                 </select>
 
-                {person.equipment === null && (
+                {person.equipment === null && person.species !== "satyr" && (
                   <button
                     type="button"
                     disabled={isBusyWithTask || availableTools < 1}
                     onClick={() => onEquipTool(person.id)}
                   >
                     Equip tool
+                  </button>
+                )}
+                {person.equipment === null && (
+                  <button
+                    type="button"
+                    disabled={isBusyWithTask || availableFlutes < 1}
+                    onClick={() => onEquipFlute(person.id)}
+                  >
+                    Equip pan flute
                   </button>
                 )}
                 {person.equipment !== null && (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Chronicle } from "../components/Chronicle";
 import { DwarfRoster } from "../components/DwarfRoster";
 import { DESTINATIONS, expeditionBlocker, traveller } from "../game/expeditions";
+import { NEWCOMER_DESTINATION } from "../game/newcomer";
 import { dailyProduction, jobLabel, mealsNeeded } from "../simulation";
 import { useColony } from "../state/ColonyContext";
 import type { ResourceKey } from "../types";
@@ -13,6 +14,7 @@ export function ColonyPage() {
     assignPerson,
     sendExpedition,
     equipTool,
+    equipFlute,
     unequipItem,
   } = useColony();
   const [destination, setDestination] = useState("crystal-cave");
@@ -37,7 +39,9 @@ export function ColonyPage() {
         people={colony.people}
         onAssign={assignPerson}
         availableTools={colony.resources.tools}
+        availableFlutes={colony.resources.panFlutes}
         onEquipTool={equipTool}
+        onEquipFlute={equipFlute}
         onUnequip={unequipItem}
       />
 
@@ -147,6 +151,12 @@ export function ColonyPage() {
             A traveller keeps an equipped tool and cannot work, forge or be
             reassigned until home.
           </p>
+          {!colony.newcomerJoined && (
+            <p>
+              Scouts speak of a prisoner held in the {DESTINATIONS[NEWCOMER_DESTINATION]?.label}.
+              Whoever frees him may bring a new resident home.
+            </p>
+          )}
         </section>
 
         <Chronicle activities={activities} />

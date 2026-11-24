@@ -8,7 +8,9 @@ export interface ColonyContextValue {
   togglePaused: () => void;
   assignPerson: (id: string, assignment: JobType) => void;
   startCraft: (personId: string, item: CraftItem) => void;
+  startCarving: () => void;
   equipTool: (personId: string) => void;
+  equipFlute: (personId: string) => void;
   unequipItem: (personId: string) => void;
   sendExpedition: (personId: string, destination: string) => void;
 }

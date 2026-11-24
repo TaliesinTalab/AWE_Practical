@@ -6,6 +6,7 @@ const details: Partial<Record<ResourceKey, [string, string]>> = {
   food: ["🍄", "Rations"],
   tools: ["⚒️", "Tools"],
   weapons: ["⚔️", "Weapons"],
+  panFlutes: ["🎶", "Pan Flutes"],
 };
 
 export function ResourceBar({ resources }: { resources: Resources }) {

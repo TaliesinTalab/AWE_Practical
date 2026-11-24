@@ -1,4 +1,5 @@
 import { appendActivity } from "../simulation";
+import { NEWCOMER_DESTINATION, welcomeNewcomer } from "./newcomer";
 import type { ColonyState, ExpeditionResult, Person, ResourceKey, Task } from "../types";
 
 export type Destination = {
@@ -10,6 +11,7 @@ export const DESTINATIONS: Record<string, Destination> = {
   "crystal-cave": { label: "Crystal Cave", days: 1 },
   "old-mine": { label: "The Old Mine", days: 2 },
   "blocked-pass": { label: "Blocked Pass", days: 1 },
+  "ominous-dungeon": { label: "Ominous Dungeon", days: 3 },
 };
 
 export function traveller(state: ColonyState): Person | undefined {
@@ -66,12 +68,15 @@ export function completeExpedition(state: ColonyState, personId: string, result:
     if (typeof amount === "number" && Number.isFinite(amount)) resources[key] += amount;
   }
 
-  return {
+  const home: ColonyState = {
     ...state,
     resources,
     people: state.people.map((entry) => (entry.id === person.id ? { ...entry, task: null } : entry)),
     activities: appendActivity(state.activities, state.day, result.message, "good"),
   };
+
+  const fromDungeon = person.task?.kind === "expedition" && person.task.destination === NEWCOMER_DESTINATION;
+  return fromDungeon ? welcomeNewcomer(home) : home;
 }
 
 export function failExpedition(state: ColonyState, personId: string, message: string): ColonyState {
