@@ -63,6 +63,7 @@ The starter destinations:
 | The Old Mine | 2 | 12 stone and 2 wood |
 | Blocked Pass | 1 | A predictable failed expedition |
 | Ominous Dungeon | 3 | 1 weapon and 2 food. The first success frees Marsyas |
+| Bandit Hold | 4 | 4 weapons. Every success brings a bandit attack on the next day |
 
 The short delay is deliberate, so that expedition behavior provides a realistic place to reason about promises, loading state, failures, and consistency between worker and resource state.
 
@@ -84,6 +85,15 @@ Marsyas eats one meal a day and can travel like a dwarf, but he works differentl
 Carving a pan flute costs 4 wood and takes 2 days. It is started on the Forge page, does not occupy the forge, and cannot start while the hold is hungry. While carving, Marsyas does no other work.
 
 A pan flute is equipped in the roster like a tool, and a resident carries either a tool or a flute, never both. It gives a woodcutting dwarf 3 extra wood per day and any farmer 3 extra food per day (Marsyas farming with a flute: 8 + 3 = 11).
+
+### Bandit raids
+
+A successful expedition to the **Bandit Hold** brings home 4 weapons, and the bandits follow the tracks. They attack Stonehome at the end of the following day. This happens after every successful trip there. A failed expedition brings no attack.
+
+- With **5 or more weapons** in the stores the gate holds. Nothing is taken and the weapons are kept.
+- With fewer, the bandits take **half of the wood, stone and food**, rounded down. Tools, weapons and pan flutes are not touched, and nobody is harmed.
+
+The rule is shown in the expedition panel when the Bandit Hold is selected. Once a raid is on its way, a "Bandit raids" panel on the colony page shows the arrival day and whether the current weapons are enough, and afterwards the result of the last raid. Both events are also written to the chronicle.
 
 ### Save and restore
 
@@ -131,7 +141,7 @@ The web app runs at `http://localhost:5174`; its API runs at `http://localhost:4
 - `GET /api/health`
 - `POST /api/expeditions` with `{ "dwarfId": "dwarf-2", "destination": "crystal-cave" }`
 
-Destinations `crystal-cave`, `old-mine` and `ominous-dungeon` have rewards. `blocked-pass` is the predictable failure case. Add `?fail=true` to force failure or `?latency=2500` to control delay. The delay is default to two seconds.
+Destinations `crystal-cave`, `old-mine`, `ominous-dungeon` and `bandit-hold` have rewards. `blocked-pass` is the predictable failure case. Add `?fail=true` to force failure or `?latency=2500` to control delay. The delay is default to two seconds.
 
 ## Project orientation
 

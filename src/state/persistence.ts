@@ -64,6 +64,7 @@ function isColonyState(value: unknown): value is ColonyState {
   if (!Array.isArray(value.people) || !value.people.every(isPerson)) return false;
   if (!Array.isArray(value.activities) || !value.activities.every(isActivity)) return false;
   if (typeof value.hungry !== "boolean" || typeof value.newcomerJoined !== "boolean") return false;
+  if (value.raidOnDay !== undefined && !isCount(value.raidOnDay)) return false;
   return isRaidResult(value.lastRaid);
 }
 
