@@ -25,6 +25,7 @@ export function craftBlocker(state: ColonyState, personId: string, item: CraftIt
 
   const person = state.people.find((entry) => entry.id === personId);
   if (!person || person.task !== null) return "Choose someone who is free.";
+  if (person.species === "satyr") return `${person.name} does not work the forge. He only carves pan flutes.`;
 
   const { wood, stone } = state.resources;
   if (wood < recipe.cost.wood || stone < recipe.cost.stone) {

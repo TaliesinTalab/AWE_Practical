@@ -8,6 +8,7 @@ let expeditionNumber = 16;
 const outcomes = {
   "crystal-cave": { rewards: { stone: 8, tools: 1 }, message: "The scout found a crystal seam and an abandoned mason's tool." },
   "old-mine": { rewards: { stone: 12, wood: 2 }, message: "The old mine still holds good stone and usable supports." },
+  "ominous-dungeon": { rewards: { weapons: 1, food: 2 }, message: "The scout broke into the dungeon cells and came back with a demon's blade and some provisions." },
 };
 
 app.use(cors()); app.use(express.json());

@@ -32,6 +32,7 @@ The shared inventory contains:
 - **Food**, gathered by farmers and consumed by the company.
 - **Tools**, produced at the forge or discovered on expeditions.
 - **Weapons**, produced at the forge and kept as a colony resource for hostile events.
+- **Pan flutes**, carved by the satyr and equipped like a tool.
 
 A stored tool can be equipped to a dwarf in the roster and returned to the stores there. An equipped tool adds one unit of the dwarf's assigned resource per day on any local job (Woodcutting 3 -> 4, Deep Mining 2 -> 3, Mushroom Farm 4 -> 5). A dwarf carries at most one tool. A dwarf who leaves on an expedition keeps the tool, and it can only be returned by hand once the dwarf is back. Tools have no durability.
 
@@ -61,8 +62,28 @@ The starter destinations:
 | Crystal Cave | 1 | 8 stone and 1 tool |
 | The Old Mine | 2 | 12 stone and 2 wood |
 | Blocked Pass | 1 | A predictable failed expedition |
+| Ominous Dungeon | 3 | 1 weapon and 2 food. The first success frees Marsyas |
 
 The short delay is deliberate, so that expedition behavior provides a realistic place to reason about promises, loading state, failures, and consistency between worker and resource state.
+
+### Marsyas the satyr
+
+The first successful expedition to the **Ominous Dungeon** frees Marsyas, a satyr whom a demon had locked away. He joins Stonehome once and stays. The expedition panel hints at the prisoner until he is found.
+
+Marsyas eats one meal a day and can travel like a dwarf, but he works differently:
+
+| | Dwarf | Marsyas |
+|---|---:|---:|
+| Mushroom Farm | 4 food | 8 food |
+| Woodcutting | 3 wood | 2 wood |
+| Deep Mining | 2 stone | not possible |
+| Tools | can equip | cannot equip |
+| Forge (tool, weapon) | can forge | cannot forge |
+| Pan flute | cannot carve | carves |
+
+Carving a pan flute costs 4 wood and takes 2 days. It is started on the Forge page, does not occupy the forge, and cannot start while the hold is hungry. While carving, Marsyas does no other work.
+
+A pan flute is equipped in the roster like a tool, and a resident carries either a tool or a flute, never both. It gives a woodcutting dwarf 3 extra wood per day and any farmer 3 extra food per day (Marsyas farming with a flute: 8 + 3 = 11).
 
 ### Save and restore
 
@@ -110,7 +131,7 @@ The web app runs at `http://localhost:5174`; its API runs at `http://localhost:4
 - `GET /api/health`
 - `POST /api/expeditions` with `{ "dwarfId": "dwarf-2", "destination": "crystal-cave" }`
 
-Destinations `crystal-cave` and `old-mine` have rewards. `blocked-pass` is the predictable failure case. Add `?fail=true` to force failure or `?latency=2500` to control delay. The delay is default to two seconds.
+Destinations `crystal-cave`, `old-mine` and `ominous-dungeon` have rewards. `blocked-pass` is the predictable failure case. Add `?fail=true` to force failure or `?latency=2500` to control delay. The delay is default to two seconds.
 
 ## Project orientation
 

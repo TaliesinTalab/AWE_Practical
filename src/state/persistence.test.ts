@@ -19,6 +19,12 @@ describe("persistence", () => {
     expect(restored?.people[2].task).toEqual({ kind: "expedition", destination: "old-mine", returnOnDay: 14 });
   });
 
+  it("keeps a carving task", () => {
+    const [first, ...rest] = initialColony.people;
+    const carving = { ...initialColony, people: [{ ...first, task: { kind: "carving" as const, doneOnDay: 14 } }, ...rest] };
+    expect(parseSave(serialise(carving))).toEqual(carving);
+  });
+
   it("rejects text that is not JSON", () => {
     expect(parseSave("{not json")).toBeNull();
     expect(parseSave("")).toBeNull();
