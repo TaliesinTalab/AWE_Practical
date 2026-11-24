@@ -1,4 +1,4 @@
-import { advanceDay, jobLabel } from "../simulation";
+import { advanceDay, appendActivity, jobLabel } from "../simulation";
 import { equipItem, forgeWeapon, unequipItem } from "../game/equipment";
 import type {
   Activity,
@@ -22,8 +22,6 @@ export type ColonyAction =
   | { type: "startExpedition"; personId: string; destination: string }
   | { type: "completeExpedition"; personId: string; result: ExpeditionResult }
   | { type: "failExpedition"; personId: string; message: string };
-
-const CHRONICLE_LIMIT = 6;
 
 export const initialColony: ColonyState = {
   day: 12,
@@ -88,9 +86,7 @@ function updatePerson(state: ColonyState, personId: string, change: Partial<Pers
 
 // Newest entry first. The id continues from the newest entry, so it never repeats.
 function record(state: ColonyState, message: string, tone?: Activity["tone"]): ColonyState {
-  const id = (state.activities[0]?.id ?? 0) + 1;
-  const entry: Activity = { id, day: state.day, message, tone };
-  return { ...state, activities: [entry, ...state.activities].slice(0, CHRONICLE_LIMIT) };
+  return { ...state, activities: appendActivity(state.activities, state.day, message, tone) };
 }
 
 export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyState {

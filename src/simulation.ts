@@ -10,7 +10,7 @@ const jobResourceKey: Record<Exclude<JobType, null>, keyof Resources> = {
   farming: "food",
 };
 
-const CHRONICLE_LIMIT = 6;
+const CHRONICLE_LIMIT = 16;
 
 export function dailyProduction(state: Pick<ColonyState, "people" | "hungry">): Resources {
   const gained: Resources = { wood: 0, stone: 0, food: 0, tools: 0, weapons: 0, panFlutes: 0 };

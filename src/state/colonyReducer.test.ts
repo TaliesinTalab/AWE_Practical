@@ -52,11 +52,11 @@ describe("colony reducer", () => {
     expect(home.activities[0]).toMatchObject({ message: "Rockfall.", tone: "warning" });
   });
 
-  it("keeps the chronicle at 6 entries with unique ids", () => {
+  it("keeps the chronicle at 16 entries with unique ids", () => {
     let state = initialColony;
-    for (let i = 0; i < 10; i++) state = colonyReducer(state, { type: "forgeTool" });
-    expect(state.activities).toHaveLength(6);
-    expect(new Set(state.activities.map((activity) => activity.id)).size).toBe(6);
+    for (let i = 0; i < 20; i++) state = colonyReducer(state, { type: "forgeTool" });
+    expect(state.activities).toHaveLength(16);
+    expect(new Set(state.activities.map((activity) => activity.id)).size).toBe(16);
   });
 
   it("does not mutate the previous state and is deterministic", () => {
