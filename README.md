@@ -64,6 +64,14 @@ The starter destinations:
 
 The short delay is deliberate, so that expedition behavior provides a realistic place to reason about promises, loading state, failures, and consistency between worker and resource state.
 
+### Save and restore
+
+The colony is saved in the browser's `localStorage` (key `dwarfhold-save`) after every change and restored when the page loads. Time does not pass while the page is closed, and a restored hold always starts running, even if it was paused.
+
+A forge task or journey that was under way continues after a refresh and finishes on its stated day. The chronicle notes every restore.
+
+Saved data carries a version and is checked when it is read. If it is damaged or comes from another version, the game starts a fresh colony and says so in the chronicle. To start over by hand, delete the key in the browser's developer tools.
+
 ## Current starter features
 
 - Three named dwarves with assignments, status, and optional specialization.

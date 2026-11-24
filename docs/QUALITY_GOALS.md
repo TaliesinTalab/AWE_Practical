@@ -28,7 +28,7 @@ Expeditions rely on an asynchronous HTTP request (`POST /api/expeditions`) that 
 
 ### Supporting decisions
 - **Safe failure handling on expeditions:** When an expedition request fails, no rewards are applied, no hostile attack is triggered, and the travelling resident is returned to availability with a clear chronicle message.
-- **Explicit interrupted-task policy across refreshes:** Day-based forge tasks continue based on `doneOnDay`, while in-flight expeditions whose HTTP request was lost on reload return the resident with no reward or attack and record the outcome in the chronicle (TD-6).
+- **Explicit interrupted-task policy across refreshes:** Forge tasks and journeys are both stored as a day (`doneOnDay`, `returnOnDay`), so after a refresh they continue and finish on that day. The server is asked on the return day; a request cut off by the refresh is asked again, and its lost answer was never applied. A chronicle entry after the restore states that tasks under way continue (TD-6).
 - **Versioned, validated persistence with fallback:** Saved data in `localStorage` includes a version identifier and passes structural/type validation on load (TD-9); invalid or incompatible data falls back cleanly to a fresh initial colony state and notifies the player.
 
 ### How it is evaluated
