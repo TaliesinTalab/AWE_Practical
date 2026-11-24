@@ -19,7 +19,7 @@ This document defines the manual verification scenarios for requirements **D1 th
 2. **Single activity per resident (no double contribution)**
    - **Precondition:** Assign a dwarf to a local job, then send that same dwarf on an expedition (or assign them to a forge task once D3 is active).
    - **Action:** Advance a simulation day while the dwarf is away on the expedition or busy in the forge.
-   - **Expected:** That dwarf produces `0` resources from their local job while away/crafting, while still counting toward daily food consumption.
+   - **Expected:** That dwarf produces `0` resources from their local job while away/crafting. A crafter still counts toward daily food consumption; a traveller does not, because the rations for the journey were taken at departure.
 3. **Food shortage consequence and recovery**
    - **Precondition:** Reduce stored food below the company's daily consumption (e.g., all dwarves unassigned until food runs out).
    - **Action:** Advance through a day where `food < people.length`, then restore food production and advance subsequent days.
@@ -39,14 +39,14 @@ This document defines the manual verification scenarios for requirements **D1 th
    - **Expected:** Output increases by `+1` unit of the assigned resource per day (e.g., Woodcutting `3 -> 4`, Deep Mining `2 -> 3`, Mushroom Farm `4 -> 5`), and the Shift Ledger reflects the boosted output.
 3. **Weapon recipe and resource display**
    - **Precondition:** Open the Forge page with sufficient materials for a weapon.
-   - **Action:** Inspect the displayed weapon recipe and craft a weapon.
-   - **Expected:** The Forge page displays the TD-3 recipe cost (`4 wood + 3 stone -> 1 weapon`); crafting with at least `4 wood` and `3 stone` deducts `4 wood` and `3 stone` and increments `weapons` by `1` in the resource bar, while crafting with insufficient wood or stone leaves resources unchanged and records a warning in the Hold Chronicle.
+   - **Action:** Inspect the displayed weapon recipe and forge a weapon.
+   - **Expected:** The Forge page displays the recipe cost (`4 wood + 3 stone -> 1 weapon`, 2 days); starting with at least `4 wood` and `3 stone` deducts them at once and `weapons` rises by `1` in the resource bar when the stated day is reached. With insufficient wood or stone the button is disabled with the reason shown, and resources are unchanged.
 
 ---
 
 ## D3 — Crafting as colony work (10%)
 
-1. **Start valid forge task (materials, eligible resident, duration)** *(TD-4: tool 1 day, weapon 2 days)*
+1. **Start valid forge task (materials, eligible resident, duration)** *(tool 1 day, weapon 2 days)*
    - **Precondition:** Sufficient materials and an eligible resident (present, not on an expedition, not already crafting).
    - **Action:** Start forging a tool (and in a separate check, a weapon).
    - **Expected:** Materials are deducted at the start; the UI shows who is crafting and on which day it completes; the crafter is marked busy and produces no local job output while crafting; upon reaching the completion day, the item is added to inventory and the resident becomes available again. The footer names the crafter while the forge is in use.
@@ -75,7 +75,7 @@ This document defines the manual verification scenarios for requirements **D1 th
 4. **Invalid departures**
    - **Precondition:** (a) a hungry hold, (b) fewer rations than the journey needs, (c) a dwarf who is forging.
    - **Expected:** The button is disabled with the reason shown; neither residents nor resources change.
-5. **Tool handling on expedition departure** *(TD-5: the traveller keeps the tool)*
+5. **Tool handling on expedition departure** *(the traveller keeps the tool)*
    - **Precondition:** Equip a tool to an eligible dwarf, then send that dwarf to The Old Mine (no tool reward).
    - **Expected:** The stored tool count changes neither on departure nor on return; the roster still shows the tool on the traveller; the Return button is disabled while the dwarf is away and works again once the dwarf is back.
 
@@ -99,7 +99,7 @@ This document defines the manual verification scenarios for requirements **D1 th
 
 ## D6 — A new species joins Stonehome (20%)
 
-1. **Newcomer arrival after first successful expedition to chosen destination** *(TD-7: Satyr after Ominous Dungeon)*
+1. **Newcomer arrival after first successful expedition to chosen destination** *(Satyr after Ominous Dungeon)*
    - **Precondition:** `newcomerJoined` is false; send an eligible dwarf to the chosen destination (`Ominous Dungeon`).
    - **Action:** Complete the first expedition successfully, then complete a second expedition to the same destination.
    - **Expected:** The Satyr joins Stonehome after the first successful expedition (and does not join a second time on subsequent expeditions); a failed expedition to that destination does not trigger arrival.

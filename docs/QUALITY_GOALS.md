@@ -12,7 +12,7 @@ Dwarfhold is a day-based simulation where residents take jobs, equip items, craf
 ### Supporting decisions
 - **Single reducer and pure game rules:** State transitions live in pure functions/reducer cases that take state and an action and return a new state without mutating inputs, reading wall-clock time, or calling `Math.random`.
 - **Derived status rather than stored duplicates:** Availability and activity status are derived from `task` and `assignment` rather than stored as a separate flag that can contradict them.
-- **Explicit invariants and single-activity rule:** A resident can participate in at most one activity at a time (local job, forge task, or expedition), tool counts are conserved across equip/unequip/expedition transitions (TD-2, TD-5), and resources are never allowed to drop below zero.
+- **Explicit invariants and single-activity rule:** A resident can participate in at most one activity at a time (local job, forge task, pan flute carving, or expedition), tool counts are conserved across equip/unequip/expedition transitions, and resources are never allowed to drop below zero.
 - **Shared production calculation:** Both the daily simulation and UI displays (such as the Shift Ledger) rely on the same underlying production logic so displayed numbers match actual daily effects.
 
 ### How it is evaluated
@@ -28,8 +28,8 @@ Expeditions rely on an asynchronous HTTP request (`POST /api/expeditions`) that 
 
 ### Supporting decisions
 - **Safe failure handling on expeditions:** When an expedition request fails, no rewards are applied, no hostile attack is triggered, and the travelling resident is returned to availability with a clear chronicle message.
-- **Explicit interrupted-task policy across refreshes:** Forge tasks and journeys are both stored as a day (`doneOnDay`, `returnOnDay`), so after a refresh they continue and finish on that day. The server is asked on the return day; a request cut off by the refresh is asked again, and its lost answer was never applied. A chronicle entry after the restore states that tasks under way continue (TD-6).
-- **Versioned, validated persistence with fallback:** Saved data in `localStorage` includes a version identifier and passes structural/type validation on load (TD-9); invalid or incompatible data falls back cleanly to a fresh initial colony state and notifies the player.
+- **Explicit interrupted-task policy across refreshes:** Forge tasks and journeys are both stored as a day (`doneOnDay`, `returnOnDay`), so after a refresh they continue and finish on that day. The server is asked on the return day; a request cut off by the refresh is asked again, and its lost answer was never applied. A chronicle entry after the restore states that tasks under way continue.
+- **Versioned, validated persistence with fallback:** Saved data in `localStorage` includes a version identifier and passes structural/type validation on load; invalid or incompatible data falls back cleanly to a fresh initial colony state and notifies the player.
 
 ### How it is evaluated
 - **Unit tests (Vitest):** Tests for failed expedition actions, duplicate completion/failure events, persistence validation, and corrupt/version-mismatched save payloads.

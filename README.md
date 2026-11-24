@@ -2,7 +2,7 @@
 
 Dwarfhold is a small browser-based colony and resource-management game. You are the warden of **Stonehome**, a new settlement beneath Emberpeak. Your three dwarves gather supplies, eat from the shared food stores, forge equipment, and explore locations beyond the hold.
 
-This is a partially completed starter for the Advanced Web Development practical exam. It is already playable, but it is not yet a finished game. Investigate its existing behavior and extend it according to the [Requirements](REQUIREMENTS.md).
+This is our solution for the Advanced Web Development practical exam, built on the provided starter. It implements requirements D1 to D7 from the [Requirements](REQUIREMENTS.md). The quality goals and the manual test plan are in [docs/](docs/).
 
 ## How the game works
 
@@ -55,7 +55,7 @@ The expedition panel lets you select a dwarf and one destination. A journey last
 
 The traveller is away until the return day: no local job, no forging, no reassignment. An equipped tool travels with its owner and can only be returned to the stores once they are home. On the return day the game asks the local API what the traveller found. A successful answer brings the dwarf home and adds the rewards to the inventory exactly once. A failed or unanswered request (the game stops waiting after 8 seconds) brings the dwarf home without rewards and is reported in the chronicle. The rations are not refunded.
 
-The starter destinations:
+The destinations:
 
 | Destination | Days | Current outcome |
 |---|---:|---|
@@ -103,19 +103,20 @@ A forge task or journey that was under way continues after a refresh and finishe
 
 Saved data carries a version and is checked when it is read. If it is damaged or comes from another version, the game starts a fresh colony and says so in the chronicle. To start over by hand, delete the key in the browser's developer tools.
 
-## Current starter features
+## Features
 
-- Three named dwarves with assignments, status, and optional specialization.
-- Woodcutting, mining, and farming jobs.
-- An automatic ten-second simulation tick with pause/resume.
-- Shared wood, stone, food, and tool inventories.
-- Daily food consumption.
-- One interactive forge recipe.
-- Separate colony and forge routes sharing the same running simulation.
-- A delayed local expedition API with success and failure outcomes.
-- A recent-activity chronicle.
-- Responsive fantasy-themed React interface.
-- A small Vitest suite for pure simulation behavior.
+- Three named dwarves, and a satyr who can join, each with a job, a status and one equipment slot.
+- Woodcutting, mining and farming jobs, with one production calculation shared by the simulation and the Shift Ledger.
+- An automatic ten-second day tick with pause and resume.
+- Shared stores of wood, stone, food, tools, weapons and pan flutes.
+- Daily meals, and a hunger rule with a visible consequence.
+- Tools and pan flutes as equipment with production bonuses.
+- Forging tools and weapons as timed colony work, and pan flute carving by the satyr.
+- Day-based expeditions to five destinations through a local API, with handling of failed and slow requests.
+- Bandit raids that are decided by a weapon threshold.
+- Save and restore in the browser, with versioned and validated data.
+- Separate colony and forge routes sharing the same running simulation, and a chronicle of recent activity.
+- Vitest unit tests for every rule module.
 
 ## Run locally
 
@@ -133,7 +134,7 @@ The web app runs at `http://localhost:5174`; its API runs at `http://localhost:4
 | `npm run dev` | Start the Vite frontend and Express API together |
 | `npm run server` | Start only the API on port 4200 |
 | `npm run build` | Type-check and create a production frontend build |
-| `npm run test` | Run the existing Vitest tests once |
+| `npm run test` | Run the Vitest unit tests once |
 | `npm run preview` | Preview a previously created production build |
 
 ## API
@@ -146,14 +147,23 @@ Destinations `crystal-cave`, `old-mine`, `ominous-dungeon` and `bandit-hold` hav
 ## Project orientation
 
 - `src/App.tsx` defines the colony and forge routes.
-- `src/state/ColonyProvider.tsx` owns shared colony state, the simulation timer, and game actions.
-- `src/state/ColonyContext.ts` exposes the shared state through `useColony`.
-- `src/pages/` contains the shared layout, colony page, and forge page.
-- `src/simulation.ts` contains the production table and daily simulation transition.
-- `src/types.ts` defines workers, jobs, statuses, resources, and activity records.
-- `src/api.ts` contains the expedition HTTP request.
-- `src/components/` contains the roster, resource display, and shared chronicle.
+- `src/types.ts` defines the whole colony state: residents, jobs, tasks, resources, raid results and activity records.
+- `src/simulation.ts` contains the production table, the daily transition (production, meals, hunger) and the chronicle helper.
+- `src/game/` contains the game rules as pure functions, each with its tests next to it:
+  - `equipment.ts` equips and returns tools and pan flutes.
+  - `crafting.ts` holds the forge recipes and forge tasks.
+  - `expeditions.ts` holds the destinations, departure, successful return and failed return.
+  - `newcomer.ts` holds the satyr, his job limits and pan flute carving.
+  - `raid.ts` announces and resolves bandit raids.
+- `src/state/colonyReducer.ts` holds the initial colony and the action list. Each case calls one rule function.
+- `src/state/persistence.ts` saves, validates and restores the colony.
+- `src/state/ColonyProvider.tsx` is wiring only: the reducer, the day timer, the save effect and the expedition request.
+- `src/state/ColonyContext.ts` exposes the state and the actions through `useColony`.
+- `src/api.ts` contains the expedition HTTP request with its timeout.
+- `src/pages/` contains the shared layout, colony page and forge page.
+- `src/components/` contains the roster, resource bar, chronicle and raid report.
 - `server/index.js` implements the local expedition service.
+- `docs/` contains the API notes, the quality goals and the manual test plan.
 
 
 See [docs/API.md](docs/API.md) for contract details.
