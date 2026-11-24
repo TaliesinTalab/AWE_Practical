@@ -10,12 +10,12 @@ const jobs: Exclude<JobType, null>[] = [
 interface Props {
   people: Person[];
   onAssign: (id: string, job: JobType) => void;
-  availableTools?: number;
-  onEquipTool?: (id: string) => void;
-  onUnequip?: (id: string) => void;
+  availableTools: number;
+  onEquipTool: (id: string) => void;
+  onUnequip: (id: string) => void;
 }
 
-export function DwarfRoster({ people, onAssign, availableTools = 0, onEquipTool, onUnequip }: Props) {
+export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onUnequip }: Props) {
   const presentPeople = people.filter(
     (person) => personStatus(person) !== "expedition",
   ).length;
@@ -81,7 +81,7 @@ export function DwarfRoster({ people, onAssign, availableTools = 0, onEquipTool,
                   ))}
                 </select>
 
-                {person.equipment === null && onEquipTool && (
+                {person.equipment === null && (
                   <button
                     type="button"
                     disabled={isBusyWithTask || availableTools < 1}
@@ -90,7 +90,7 @@ export function DwarfRoster({ people, onAssign, availableTools = 0, onEquipTool,
                     Equip tool
                   </button>
                 )}
-                {person.equipment !== null && onUnequip && (
+                {person.equipment !== null && (
                   <button
                     type="button"
                     disabled={isBusyWithTask}

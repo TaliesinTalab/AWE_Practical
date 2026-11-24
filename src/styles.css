@@ -346,7 +346,8 @@ small {
 }
 
 .recipe button,
-.expedition button {
+.expedition button,
+.dwarf button {
   border: 0;
   background: #b57b32;
   color: #160f08;
@@ -388,8 +389,13 @@ small {
   background: #c18b3f;
 }
 
-.expedition button:disabled {
+.expedition button:disabled,
+.dwarf button:disabled {
   opacity: .5;
+}
+
+.dwarf button {
+  margin-top: 6px;
 }
 
 .expedition > p {
@@ -401,6 +407,13 @@ small {
 
 .chronicle {
   min-height: 245px;
+}
+
+.chronicle-list {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #68502f #191510;
 }
 
 .chronicle article {

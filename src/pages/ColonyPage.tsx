@@ -50,6 +50,15 @@ export function ColonyPage() {
             <span>updates each day</span>
           </header>
 
+          {colony.hungry && (
+            <div className="net-line">
+              <span className="loss">
+                THE HOLD IS HUNGRY: ONLY FARMING PRODUCES AND NO EXPEDITION
+                LEAVES UNTIL A DAY ENDS WITH EVERYONE FED
+              </span>
+            </div>
+          )}
+
           <div className="job-grid">
             {(["woodcutting", "mining", "farming"] as const).map((job) => (
               <article key={job}>

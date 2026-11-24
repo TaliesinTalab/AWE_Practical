@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { equipItem, forgeWeapon, unequipItem, WEAPON_COST } from "./equipment";
+import { colonyReducer, initialColony } from "../state/colonyReducer";
 import type { ColonyState } from "../types";
 
 const makeState = (overrides: Partial<ColonyState> = {}): ColonyState => ({
@@ -66,5 +67,23 @@ describe("equipment and weapon recipe rules", () => {
     const snapshot = structuredClone(start);
     expect(equipItem(start, "d1", "tool")).toEqual(equipItem(start, "d1", "tool"));
     expect(start).toEqual(snapshot);
+  });
+
+  it("keeps the tool with a traveller and only returns it once they are home", () => {
+    const equipped = colonyReducer(initialColony, { type: "equip", personId: "dwarf-3", item: "tool" });
+    const away = colonyReducer(equipped, { type: "startExpedition", personId: "dwarf-3", destination: "old-mine" });
+    expect(away.resources.tools).toBe(0);
+    expect(colonyReducer(away, { type: "unequip", personId: "dwarf-3" })).toBe(away);
+
+    const home = colonyReducer(away, {
+      type: "completeExpedition",
+      personId: "dwarf-3",
+      result: { expeditionId: "exp-1", status: "completed", rewards: { stone: 12, wood: 2 }, message: "Back." },
+    });
+    expect(home.resources.tools).toBe(0);
+    expect(home.people.find((person) => person.id === "dwarf-3")?.equipment).toBe("tool");
+
+    const returned = colonyReducer(home, { type: "unequip", personId: "dwarf-3" });
+    expect(returned.resources.tools).toBe(1);
   });
 });

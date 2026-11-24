@@ -19,6 +19,8 @@ Each dwarf can have one of these local assignments:
 
 At the end of each day, the colony consumes one food for every dwarf. With the initial company of three dwarves, daily meals therefore consume three food. The Shift Ledger shows current assignments and expected production.
 
+If the food cannot cover every meal, the stores drop to zero and the hold goes hungry: only the Mushroom Farm produces and no expedition can leave. The hold recovers as soon as a day ends with everyone fed. The Shift Ledger shows a notice for as long as the hold is hungry.
+
 Use the assignment dropdown beside a dwarf to change their work. A changed assignment affects subsequent simulation days.
 
 ### Resources
@@ -30,7 +32,7 @@ The shared inventory contains:
 - **Food**, gathered by farmers and consumed by the company.
 - **Tools**, produced at the forge or discovered on expeditions.
 
-The starter does not yet give stored tools an additional production bonus or durability rule. They provide a small production-chain foundation that may be expanded by later requirements.
+A stored tool can be equipped to a dwarf in the roster and returned to the stores there. An equipped tool adds one unit of the dwarf's assigned resource per day on any local job (Woodcutting 3 -> 4, Deep Mining 2 -> 3, Mushroom Farm 4 -> 5). A dwarf carries at most one tool. A dwarf who leaves on an expedition keeps the tool, and it can only be returned by hand once the dwarf is back. Tools have no durability.
 
 ### Ember Forge
 

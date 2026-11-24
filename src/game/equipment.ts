@@ -1,5 +1,5 @@
 import { appendActivity } from "../simulation";
-import type { Activity, ColonyState, Equipment, Person } from "../types";
+import type { ColonyState, Equipment, Person } from "../types";
 
 export const WEAPON_COST = {
   wood: 4,
