@@ -114,14 +114,17 @@ This document defines the manual verification scenarios for requirements **D1 th
 
 ## D7 — Expedition consequences and defense (15%)
 
-1. **Hostile attack on successful expedition with insufficient weapons** *(update destination, threshold, and loot details once TD-8 is finalized)*
-   - **Precondition:** Stored `weapons` is below the defense threshold; send an eligible resident to the hostile destination.
-   - **Action:** Complete the expedition successfully.
-   - **Expected:** Attackers follow the traveller home; because weapons are below the threshold, a deterministic selection of stored resources is looted (never going below zero), and the raid outcome and losses are clearly displayed in the UI and chronicle.
-2. **Successful defense when weapons meet or exceed threshold** *(update weapon consumption rule once TD-8 is finalized)*
-   - **Precondition:** Forge enough weapons to reach or exceed the threshold; send an eligible resident to the hostile destination.
-   - **Action:** Complete the expedition successfully.
-   - **Expected:** Stonehome defends against the attack with no resource looting; weapons are preserved or consumed consistently according to the communicated rule, and the outcome is clearly shown.
+1. **Bandit attack after a successful expedition with too few weapons**
+   - **Precondition:** 0 stored `weapons`. Select `Bandit Hold` (4 days): the expedition panel states the rule (attack on the next day, 5 weapons hold the gate, weapons are kept, otherwise half of wood, stone and food).
+   - **Action:** Send an eligible resident and wait for the return and one more day.
+   - **Expected:** On the return day weapons rise to 4, the chronicle warns of the attack and the "Bandit raids" panel shows the arrival day with "Too few weapons". At the end of the next day wood, stone and food are halved (rounded down, never below zero), tools, weapons and pan flutes are unchanged, and the losses are shown in the chronicle and as "Last raid" in the panel.
+2. **Successful defence at or above the threshold**
+   - **Precondition:** At least 1 stored weapon before the return (forged, or from the Ominous Dungeon), so that the 4 from the Bandit Hold reach 5.
+   - **Action:** Send an eligible resident to `Bandit Hold` and wait for the return and one more day. Repeat the trip once more.
+   - **Expected:** The panel shows "Enough weapons". After the attack nothing is taken, the weapon count is unchanged (weapons are kept), and chronicle and panel report the defence. The second trip brings a second attack with the same outcome.
 3. **Failed expedition never triggers attack**
-   - **Precondition:** Trigger a failed request (`?fail=true`) to the hostile destination.
-   - **Expected:** The expedition fails cleanly, the traveller returns, and no hostile attack or looting occurs.
+   - **Precondition:** A resident is on the way to `Bandit Hold`. Stop the API before the return day.
+   - **Expected:** The traveller returns with the failure message and no weapons. No attack is announced, no "Bandit raids" panel appears, and nothing is taken on the next day.
+4. **Pause and refresh between return and attack**
+   - **Action:** After a successful return from `Bandit Hold`, (a) pause the hold, (b) refresh the browser before the next day.
+   - **Expected:** No attack while paused. After the refresh the pending raid is still shown, and the attack happens at the next day tick.

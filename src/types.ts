@@ -29,7 +29,8 @@ export interface ColonyState {
     activities: Activity[]; 
     hungry: boolean; 
     newcomerJoined: boolean; 
-    lastRaid: RaidResult | null 
+    lastRaid: RaidResult | null;
+    raidOnDay?: number
 }
 
 export interface RaidResult { 

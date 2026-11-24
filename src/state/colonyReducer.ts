@@ -3,6 +3,7 @@ import { completeCrafts, startCraft } from "../game/crafting";
 import { equipItem, unequipItem } from "../game/equipment";
 import { completeExpedition, failExpedition, startExpedition } from "../game/expeditions";
 import { canDoJob, completeCarving, startCarving } from "../game/newcomer";
+import { resolveRaid } from "../game/raid";
 import type {
   Activity,
   ColonyState,
@@ -89,7 +90,7 @@ function record(state: ColonyState, message: string, tone?: Activity["tone"]): C
 export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyState {
   switch (action.type) {
     case "advanceDay":
-      return completeCarving(completeCrafts(advanceDay(state)));
+      return resolveRaid(completeCarving(completeCrafts(advanceDay(state))));
 
     case "assignJob": {
       const person = availablePerson(state, action.personId);

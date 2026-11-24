@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Chronicle } from "../components/Chronicle";
 import { DwarfRoster } from "../components/DwarfRoster";
+import { RaidReport } from "../components/RaidReport";
 import { DESTINATIONS, expeditionBlocker, traveller } from "../game/expeditions";
 import { NEWCOMER_DESTINATION } from "../game/newcomer";
+import { RAID_DESTINATION, WEAPON_THRESHOLD } from "../game/raid";
 import { dailyProduction, jobLabel, mealsNeeded } from "../simulation";
 import { useColony } from "../state/ColonyContext";
 import type { ResourceKey } from "../types";
@@ -96,6 +98,8 @@ export function ColonyPage() {
             </strong>
           </div>
         </section>
+
+        <RaidReport colony={colony} />
       </section>
 
       <aside className="side-stack">
@@ -151,6 +155,14 @@ export function ColonyPage() {
             A traveller keeps an equipped tool and cannot work, forge or be
             reassigned until home.
           </p>
+          {destination === RAID_DESTINATION && (
+            <p>
+              Bandits strike back the day after a successful raid on their hold.
+              With {WEAPON_THRESHOLD} weapons in the stores ({colony.resources.weapons} now)
+              the gate holds and the weapons are kept. Otherwise they take half
+              of the timber, stone and rations.
+            </p>
+          )}
           {!colony.newcomerJoined && (
             <p>
               Scouts speak of a prisoner held in the {DESTINATIONS[NEWCOMER_DESTINATION]?.label}.
