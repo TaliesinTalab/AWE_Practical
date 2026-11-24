@@ -5,13 +5,12 @@ export interface ColonyContextValue {
   colony: ColonyState;
   paused: boolean;
   activities: Activity[];
-  expeditionPending: boolean;
   togglePaused: () => void;
   assignPerson: (id: string, assignment: JobType) => void;
   startCraft: (personId: string, item: CraftItem) => void;
   equipTool: (personId: string) => void;
   unequipItem: (personId: string) => void;
-  sendExpedition: (personId: string, destination: string) => Promise<void>;
+  sendExpedition: (personId: string, destination: string) => void;
 }
 
 export const ColonyContext = createContext<ColonyContextValue | null>(null);

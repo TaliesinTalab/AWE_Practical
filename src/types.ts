@@ -5,7 +5,7 @@ export type Species = "dwarf" | "satyr";
 export type Equipment = "tool" | "panFlute";
 export type CraftItem = Equipment | "weapon";
 export type Task =
-    | { kind: "expedition"; destination: string }
+    | { kind: "expedition"; destination: string; returnOnDay: number }
     | { kind: "forge"; item: CraftItem; doneOnDay: number };
 export interface Resources { wood: number; stone: number; food: number; tools: number; weapons: number; panFlutes: number }
 

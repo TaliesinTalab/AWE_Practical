@@ -78,7 +78,7 @@ export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onU
                     <option value="task">
                       {person.task.kind === "forge"
                         ? `Forging until day ${person.task.doneOnDay}`
-                        : "On expedition"}
+                        : `Away until day ${person.task.returnOnDay}`}
                     </option>
                   )}
                   {jobs.map((job) => (
@@ -115,4 +115,4 @@ export function DwarfRoster({ people, onAssign, availableTools, onEquipTool, onU
       </div>
     </section>
   );
-}
+}

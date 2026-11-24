@@ -25,12 +25,12 @@ describe("colony simulation", () => {
   it("does not produce local resources for a person on an expedition or forge task", () => {
     const state = makeState({
       people: [
-        { id: "d1", name: "Brom", title: "", icon: "", assignment: "woodcutting", species: "dwarf", equipment: null, task: { kind: "expedition", destination: "crystal-cave" } },
+        { id: "d1", name: "Brom", title: "", icon: "", assignment: "woodcutting", species: "dwarf", equipment: null, task: { kind: "expedition", destination: "crystal-cave", returnOnDay: 2 } },
         { id: "d2", name: "Yrsa", title: "", icon: "", assignment: "mining", species: "dwarf", equipment: null, task: { kind: "forge", item: "tool", doneOnDay: 3 } },
       ],
     });
     expect(dailyProduction(state)).toEqual({ wood: 0, stone: 0, food: 0, tools: 0, weapons: 0, panFlutes: 0 });
-    expect(advanceDay(state)).toMatchObject({ resources: { wood: 0, stone: 0, food: 3 } });
+    expect(advanceDay(state)).toMatchObject({ resources: { wood: 0, stone: 0, food: 4 } });
   });
 
   it("enters hungry state when food cannot cover meals, restricts next day to farming, and recovers when fed", () => {
@@ -76,4 +76,4 @@ describe("colony simulation", () => {
     expect(dailyProduction(hungryState)).toMatchObject({ wood: 0, stone: 0, food: 5 });
   });
   
-});
+});
