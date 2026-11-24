@@ -56,4 +56,24 @@ describe("colony simulation", () => {
     expect(day3.hungry).toBe(false);
     expect(day3.activities[0]).toMatchObject({ day: 3, tone: "good" });
   });
+
+  it("adds +1 production when a working resident equips a tool on a compatible job, respecting hunger", () => {
+    const state = makeState({
+      people: [
+        { id: "d1", name: "Brom", title: "", icon: "", assignment: "woodcutting", species: "dwarf", equipment: "tool", task: null },
+        { id: "d2", name: "Yrsa", title: "", icon: "", assignment: "mining", species: "dwarf", equipment: "tool", task: null },
+      ],
+    });
+    expect(dailyProduction(state)).toMatchObject({ wood: 4, stone: 3, food: 0 });
+
+    const hungryState = makeState({
+      hungry: true,
+      people: [
+        { id: "d1", name: "Brom", title: "", icon: "", assignment: "woodcutting", species: "dwarf", equipment: "tool", task: null },
+        { id: "d2", name: "Yrsa", title: "", icon: "", assignment: "farming", species: "dwarf", equipment: "tool", task: null },
+      ],
+    });
+    expect(dailyProduction(hungryState)).toMatchObject({ wood: 0, stone: 0, food: 5 });
+  });
+  
 });

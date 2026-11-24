@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Activity, ColonyState, JobType } from "../types";
+import type { Activity, ColonyState, Equipment, JobType } from "../types";
 
 export interface ColonyContextValue {
   colony: ColonyState;
@@ -9,6 +9,9 @@ export interface ColonyContextValue {
   togglePaused: () => void;
   assignPerson: (id: string, assignment: JobType) => void;
   craftTool: () => void;
+  craftWeapon: () => void;
+  equipTool: (personId: string) => void;
+  unequipItem: (personId: string) => void;
   sendExpedition: (personId: string, destination: string) => Promise<void>;
 }
 

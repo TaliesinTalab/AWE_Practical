@@ -9,14 +9,17 @@ import type { ResourceKey } from "../types";
 export function ColonyPage() {
   const {
     colony,
+    paused,
     activities,
     expeditionPending,
     assignPerson,
     sendExpedition,
+    equipTool,
+    unequipItem,
   } = useColony();
   const [destination, setDestination] = useState("crystal-cave");
   const [expeditionPerson, setExpeditionPerson] = useState(colony.people[0]?.id ?? "");
-  const canSend = !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
+  const canSend = !paused && !colony.hungry && !expeditionPending && availablePerson(colony, expeditionPerson) !== undefined;
 
   const gained = dailyProduction(colony);
   const netFood = gained.food - colony.people.length;
@@ -29,7 +32,13 @@ export function ColonyPage() {
 
   return (
     <div className="dashboard">
-      <DwarfRoster people={colony.people} onAssign={assignPerson} />
+      <DwarfRoster
+        people={colony.people}
+        onAssign={assignPerson}
+        availableTools={colony.resources.tools}
+        onEquipTool={equipTool}
+        onUnequip={unequipItem}
+      />
 
       <section className="center-stack">
         <section className="panel production">
@@ -40,6 +49,15 @@ export function ColonyPage() {
             </div>
             <span>updates each day</span>
           </header>
+
+          {colony.hungry && (
+            <div className="net-line">
+              <span className="loss">
+                THE HOLD IS HUNGRY: ONLY FARMING PRODUCES AND NO EXPEDITION
+                LEAVES UNTIL A DAY ENDS WITH EVERYONE FED
+              </span>
+            </div>
+          )}
 
           <div className="job-grid">
             {(["woodcutting", "mining", "farming"] as const).map((job) => (

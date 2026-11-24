@@ -23,7 +23,7 @@ This document defines the manual verification scenarios for requirements **D1 th
 3. **Food shortage consequence and recovery**
    - **Precondition:** Reduce stored food below the company's daily consumption (e.g., all dwarves unassigned until food runs out).
    - **Action:** Advance through a day where `food < people.length`, then restore food production and advance subsequent days.
-   - **Expected:** Production happens before meals; when total food cannot cover everyone, food is clamped to `0`, `hungry` becomes `true`, a warning is recorded in the Hold Chronicle, and on the next day only Mushroom Farm (`farming`) produces (`woodcutting` and `mining` show `0 / day` in the Shift Ledger); once a day ends with everyone fed, `hungry` becomes `false`, full production resumes, and a recovery entry appears in the Hold Chronicle.
+   - **Expected:** Production happens before meals; when total food cannot cover everyone, food is clamped to `0`, `hungry` becomes `true`, a warning is recorded in the Hold Chronicle, and on the next day only Mushroom Farm (`farming`) produces (`woodcutting` and `mining` show `0 / day` in the Shift Ledger); once a day ends with everyone fed, `hungry` becomes `false`, full production resumes, and a recovery entry appears in the Hold Chronicle. While `hungry` is `true`, the Shift Ledger shows the hunger notice and the Send expedition button is disabled.
 
 ---
 
@@ -32,15 +32,15 @@ This document defines the manual verification scenarios for requirements **D1 th
 1. **Equip and return a tool**
    - **Precondition:** At least `1` tool in shared inventory and an unassigned or working dwarf with no equipped item.
    - **Action:** Equip a tool to the dwarf, inspect the roster and resource bar, then unequip/return the tool.
-   - **Expected:** Stored `tools` decreases by `1` on equip and increases by `1` on return; the roster clearly shows who holds the tool; a dwarf cannot equip more than one tool, and a tool cannot be equipped by multiple dwarves simultaneously.
+   - **Expected:** Stored `tools` decreases by `1` on equip and increases by `1` on return; the roster clearly shows who holds the tool; a dwarf cannot equip more than one tool, and a tool cannot be equipped by multiple dwarves simultaneously. The Equip and Return buttons are readable and fit the roster row.
 2. **Tool production bonus on compatible local jobs**
    - **Precondition:** Equip a tool to a dwarf assigned to Woodcutting (and repeat for Deep Mining / Mushroom Farm).
    - **Action:** Advance one simulation day.
    - **Expected:** Output increases by `+1` unit of the assigned resource per day (e.g., Woodcutting `3 -> 4`, Deep Mining `2 -> 3`, Mushroom Farm `4 -> 5`), and the Shift Ledger reflects the boosted output.
-3. **Weapon recipe and resource display** *(update material cost once TD-3 is decided)*
+3. **Weapon recipe and resource display**
    - **Precondition:** Open the Forge page with sufficient materials for a weapon.
    - **Action:** Inspect the displayed weapon recipe and craft a weapon.
-   - **Expected:** Material cost is clearly displayed on the Forge page; crafting deducts materials and increments stored `weapons` in the resource bar rather than assigning a weapon to an individual resident.
+   - **Expected:** The Forge page displays the TD-3 recipe cost (`4 wood + 3 stone -> 1 weapon`); crafting with at least `4 wood` and `3 stone` deducts `4 wood` and `3 stone` and increments `weapons` by `1` in the resource bar, while crafting with insufficient wood or stone leaves resources unchanged and records a warning in the Hold Chronicle.
 
 ---
 
@@ -71,9 +71,9 @@ This document defines the manual verification scenarios for requirements **D1 th
    - **Precondition:** Use elevated API latency (e.g., `?latency=4000`).
    - **Action:** Rapidly click "Send expedition" multiple times and attempt to reassign the travelling dwarf while the request is in flight.
    - **Expected:** Only one expedition starts; duplicate clicks and reassignments are ignored without contradictory state.
-4. **Tool handling on expedition departure** *(update once TD-5 is decided)*
-   - **Precondition:** Equip a tool to an eligible dwarf, then send that dwarf on an expedition.
-   - **Expected:** The equipped tool behaves strictly according to the team's departure policy (e.g., returned to store automatically before departure with a chronicle entry) and total tool count remains conserved.
+4. **Tool handling on expedition departure** *(TD-5: the traveller keeps the tool)*
+   - **Precondition:** Equip a tool to an eligible dwarf, then send that dwarf to The Old Mine (no tool reward).
+   - **Expected:** The stored tool count changes neither on departure nor on return; the roster still shows the tool on the traveller; the Return button is disabled while the dwarf is away and works again once the dwarf is back.
 
 ---
 

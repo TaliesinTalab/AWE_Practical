@@ -1,4 +1,5 @@
-import { advanceDay, jobLabel } from "../simulation";
+import { advanceDay, appendActivity, jobLabel } from "../simulation";
+import { equipItem, forgeWeapon, unequipItem } from "../game/equipment";
 import type {
   Activity,
   ColonyState,
@@ -14,14 +15,13 @@ export type ColonyAction =
   | { type: "advanceDay" }
   | { type: "assignJob"; personId: string; job: JobType }
   | { type: "forgeTool" }
+  | { type: "craftWeapon" }
   | { type: "equip"; personId: string; item: Equipment }
   | { type: "unequip"; personId: string }
   | { type: "startCraft"; personId: string; item: CraftItem }
   | { type: "startExpedition"; personId: string; destination: string }
   | { type: "completeExpedition"; personId: string; result: ExpeditionResult }
   | { type: "failExpedition"; personId: string; message: string };
-
-const CHRONICLE_LIMIT = 6;
 
 export const initialColony: ColonyState = {
   day: 12,
@@ -80,15 +80,13 @@ function isTravelling(state: ColonyState, personId: string): boolean {
 function updatePerson(state: ColonyState, personId: string, change: Partial<Person>): ColonyState {
   return {
     ...state,
-    people: state.people.map((person) => person.id === personId ? { ...person, ...change } : person),
+    people: state.people.map((person) => (person.id === personId ? { ...person, ...change } : person)),
   };
 }
 
 // Newest entry first. The id continues from the newest entry, so it never repeats.
 function record(state: ColonyState, message: string, tone?: Activity["tone"]): ColonyState {
-  const id = (state.activities[0]?.id ?? 0) + 1;
-  const entry: Activity = { id, day: state.day, message, tone };
-  return { ...state, activities: [entry, ...state.activities].slice(0, CHRONICLE_LIMIT) };
+  return { ...state, activities: appendActivity(state.activities, state.day, message, tone) };
 }
 
 export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyState {
@@ -141,10 +139,14 @@ export function colonyReducer(state: ColonyState, action: ColonyAction): ColonyS
     }
 
     // Filled in by D2.
+    case "craftWeapon":
+      return forgeWeapon(state);
+
     case "equip":
-      return state;
+      return equipItem(state, action.personId, action.item);
+
     case "unequip":
-      return state;
+      return unequipItem(state, action.personId);
 
     // Filled in by D3.
     case "startCraft":
